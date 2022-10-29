@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { getRandomNumber } from '../helpers'
-import Button from './Button'
-import Question from './Question'
-import { questionList } from './questionList'
+import Button from '../components/Button'
+import Question from '../components/Question'
+import { questionList } from '../components/questionList'
 
 const Homepage = () => {
 

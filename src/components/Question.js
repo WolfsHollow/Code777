@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { questionList } from './questionList'
-import { getRandomNumber } from '../helpers'
+import { getRandomNumber } from '../utilities/helpers'
 
 const Question = ({ question }) => {
 

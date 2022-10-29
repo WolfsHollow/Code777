@@ -4,6 +4,31 @@
   --UIBackground: url(./assets/images/Sonar_Background.png);
   --UIBackground2: url(./assets/images/Sonar_Background2.png);
   --UIBackground3: url(./assets/images/Sonar_Background.png);
+
+  /* colors */
+  --blue: blue;
+  --darkblue: rgb(2, 2, 126);
+
+  --yellow: yellow;
+  --darkYellow: rgb(132, 141, 0);
+
+  --green: green;
+  --darkGreen: rgb(4, 66, 22);
+
+  --pink: pink;
+  --darkPink: rgb(182, 65, 236);
+
+  --red: red;
+  --darkRed: rgb(88, 6, 6);
+
+  --brown: brown;
+  --darkBrown: rgb(68, 41, 1);
+
+  --black: black;
+
+
+
+
   height: 100vh;
   width: 100vw;
 }
@@ -28,9 +53,8 @@ code {
 }
 
 .QuestionBox {
+  grid-area: 1 / 1 / 5 / 3;
   background-color: black;
-  height: 150px;
-  width: 450px;
   border: 2px solid black;
   padding-left: 20px;
   padding-right: 10px;
@@ -149,6 +173,8 @@ code {
   z-index: 0;
 }
 
+
+/*#region animation*/
 .changeAnimation {
   animation-name: change;
   animation-duration: 4s;
@@ -175,40 +201,49 @@ code {
 
 }
 
+/*#endregion end animation */
+
+
+.gameplay {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 0;
+  grid-template-rows: repeat(4, 1fr) 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  height: 100%;
+  width: 100%;
+}
+
 .playerBoardContainer {
   display: grid;
+  grid-area: 2 / 1 / 5 / 3;
   grid-template-rows: 1fr 1fr 1fr;
-  height: 100%;
-  gap: 50px;
-  width: 50%;
   border: 2px solid green;
   background-color: green;
 }
 
 .playerContainer {
   display: grid;
-  grid-template-columns: .3fr 1fr;
-  gap: 10px;
-  height: 100%;
-  width: 100%;
+  grid-template-columns: .3fr 1fr 1fr 1fr;
   border: 2px solid black;
   box-sizing: border-box;
-  margin-bottom: 25px;
   background-color: aqua;
 }
 
 .playerNameContainer {
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
 }
 
-.playerName {
+.playerName,
+.score {
   bottom: 0px;
-  font-size: 3rem;
+  font-size: 2.5rem;
   height: 50%;
   box-sizing: border-box;
   background-color: blue;
+  border: 1px solid white;
 }
 
 .cardContainer {
@@ -220,32 +255,71 @@ code {
   background-color: purple;
 }
 
-.cardTray {
-  position: absolute;
-  /* z-index: 10; */
-  height: 12.5%;
-  margin-top: 8%;
-  width: 45%;
-  background-color: rgba(204, 12, 12, 0.5);
-}
-
 .card {
-  height: 100%;
+  display: flex;
+  background-color: white;
+  height: 80%;
   z-index: 1;
-  background-color: yellow;
   width: 100%;
   font-size: 3rem;
   border: 2px solid black;
   justify-content: center;
-  display: flex;
+  align-self: flex-end;
   align-items: center;
-  justify-content: center;
-  vertical-align: middle;
   box-sizing: border-box;
 }
 
+.chat {
+  grid-area: 1 / 3 / 2 / 5;
+  border: 2px solid black;
+  box-sizing: border-box;
+}
+
+.numberNoteCardContainer {
+  grid-area: 2 / 3 / 5 / 5;
+  border: 2px solid black;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.editButtons {
+  background-color: orange;
+  height: 20%;
+  width: 100%;
+}
+
+.numberNoteCard {
+  background-color: gray;
+  height: 80%;
+  width: 100%;
+  border: 2px solid white;
+  border-radius: 50px;
+
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  grid-template-rows: 0 repeat(7, 1fr) 0;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.numberNoteCard>div {
+  height: 100%;
+  width: 100%;
+  font-size: 4rem;
+  grid-area: 8 / 1 / 9 / 3;
+  text-align: center;
+  line-height: 5rem;
+  border-radius: 10px;
+  -webkit-text-stroke-width: .3px;
+  user-select: none;
+}
+
+
+/*#region colors */
 .G {
   background-color: green;
+
 }
 
 .R {
@@ -255,3 +329,47 @@ code {
 .B {
   background-color: blue;
 }
+
+.blk {
+  color: var(--black);
+  border: 2px solid var(--black);
+  -webkit-text-stroke-color: var(--black);
+}
+
+.blu {
+  color: var(--blue);
+  border: 2px solid var(--blue);
+  -webkit-text-stroke-color: var(--darkBlue);
+}
+
+.bro {
+  color: var(--brown);
+  border: 2px solid var(--brown);
+  -webkit-text-stroke-color: var(--darkBrown);
+}
+
+.grn {
+  color: var(--green);
+  border: 2px solid var(--green);
+  -webkit-text-stroke-color: var(--darkGreen);
+}
+
+.pnk {
+  color: var(--pink);
+  border: 2px solid var(--pink);
+  -webkit-text-stroke-color: var(--darkPink);
+}
+
+.red {
+  color: var(--red);
+  border: 2px solid var(--red);
+  -webkit-text-stroke-color: var(--darkRed);
+}
+
+.yel {
+  color: var(--yellow);
+  border: 2px solid var(--yellow);
+  -webkit-text-stroke-color: var(--darkYellow);
+}
+
+/*#endregion end colors */
