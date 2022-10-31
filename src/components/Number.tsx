@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
 
-const Number = ({ color, value, grid }) => {
+type props = {
+    color: string,
+    value: string,
+    grid: string,
+}
+
+const Number = ({ color, value, grid }: props) => {
 
     const [backgroundColor, setBackgroundColor] = useState('white')
 
@@ -8,6 +14,9 @@ const Number = ({ color, value, grid }) => {
         let color = backgroundColor;
         switch (color) {
             case "white":
+                color = 'red';
+                break;
+            case "red":
                 color = 'yellow';
                 break;
             case "yellow":

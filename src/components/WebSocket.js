@@ -20,10 +20,10 @@ import {
 } from './gameStateSlice'
 import { WEBSOCKET_HOST } from '../appConfig';
 
-const WebSocketContext = createContext(null);
+// const WebSocketContext = createContext(null);
 
 export { WebSocketContext };
-var stompClient;
+// var stompClient;
 
 const WebSocket = ({ children }) => {
 

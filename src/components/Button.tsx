@@ -1,7 +1,18 @@
 import React from 'react'
 import { Route, useNavigate } from 'react-router-dom'
 
-const Button = ({ text, routesTo, onClick, routeAndClick, className, buttonStyle, type }) => {
+type ButtonProps = {
+    text: string,
+    routesTo?: string,
+    onClick?: () => void,
+    routeAndClick?: boolean,
+    className?: string,
+    buttonStyle?: React.CSSProperties,
+    type?: "button" | "submit" | "reset",
+}
+
+const Button = ({ text, routesTo, onClick, routeAndClick, className, buttonStyle, type }: ButtonProps) => {
+
 
     const navigate = useNavigate();
 
@@ -34,3 +45,5 @@ const Button = ({ text, routesTo, onClick, routeAndClick, className, buttonStyle
 }
 
 export default Button
+
+
