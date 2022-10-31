@@ -3,7 +3,7 @@ import { DECK, PLAYER, QUESTION_BANK } from '../data/constants';
 import { getRandomNumber, shuffle } from '../utilities/helpers';
 
 interface gameState {
-    deck: Array<string>,
+    deck: [string, number][],
     playerTurn: number,
     currentQuestion: number,
     players: Array<string>,
@@ -46,7 +46,7 @@ export const gameStateSlice = createSlice({
             state.playerHands = newHands;
             state.deck = newDeck;
         },
-        updateDeck: (state, { payload }: PayloadAction<Array<string>>) => {
+        updateDeck: (state, { payload }: PayloadAction<Array<[string, number]>>) => {
             state.deck = payload;
             console.log('deck updated');
         },

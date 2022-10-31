@@ -31,7 +31,7 @@ const Game = () => {
     const currentQuestion = useAppSelector(selectCurrentQuestion);
     const questionNumber = useAppSelector(selectCurrentQuestion);
 
-    const numberDivs = NUMBERS.map((entry, index) =>
+    const numberDivs = NUMBERS.map((entry: [string, number, string], index: number) =>
         <Number color={entry[0]} value={entry[1]} grid={entry[2]} key={index} />)
 
 

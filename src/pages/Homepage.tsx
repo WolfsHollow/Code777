@@ -6,16 +6,24 @@ import { questionList } from '../components/questionList'
 
 const Homepage = () => {
 
-    const [questionNumber, setQuestionNumber] = useState(getRandomNumber(23));
-
-    const newQuestion = () => {
-        setQuestionNumber(getRandomNumber(23));
-    }
+    const instructions = `
+    1. Click on the CREATE ROOM button.\n
+    2. Select the preferred game settings and start the game.\n
+    3. Connect with your friends using your favorite audio or video chat.\n
+    4. Share the room URL with your friends.\n
+    5. Enjoy the game!\n
+    `;
 
     return (
         <div className='homepage changeAnimation'>
-            <Question question={questionNumber} />
-            <Button text='Next Question' onClick={newQuestion} />
+            <h3>CODE 777</h3>
+            <Button text='Create Room' routesTo='room/create' />
+            <div>
+                <p>How to play:</p>
+                <hr />
+                <span style={{ whiteSpace: "pre-wrap" }}>{instructions}</span>
+            </div>
+
         </div>
     )
 }

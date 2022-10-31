@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 type props = {
     color: string,
-    value: string,
+    value: number,
     grid: string,
 }
 

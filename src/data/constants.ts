@@ -18,7 +18,7 @@ export const NUMBERS = [
     [COLORS.PINK, 7, "8/1/9/3"], [COLORS.YELLOW, 7, "8/3/9/5"], [COLORS.YELLOW, 7, "8/5/9/7"], [COLORS.BLUE, 7, "8/7/9/9"], [COLORS.BLUE, 7, "8/9/9/11"], [COLORS.BLUE, 7, "8/11/9/13"], [COLORS.BLUE, 7, "8/13/9/15"]
 ]
 
-export const DECK = [
+export const DECK: [string, number][] = [
     [COLORS.GREEN, 1],
     [COLORS.YELLOW, 2], [COLORS.YELLOW, 2],
     [COLORS.BLACK, 3], [COLORS.BLACK, 3], [COLORS.BLACK, 3],
