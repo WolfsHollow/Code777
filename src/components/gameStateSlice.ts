@@ -7,6 +7,7 @@ interface gameState {
     playerTurn: number,
     currentQuestion: number,
     players: Array<string>,
+    username: string,
     userPlayerNumber: number,
     numPlayers: number,
     playerHands: Array<Array<string>>,
@@ -18,6 +19,7 @@ const initialState: gameState = {
     playerTurn: 0,
     currentQuestion: 0,
     players: [PLAYER.ONE, PLAYER.TWO, PLAYER.THREE, PLAYER.FOUR],
+    username: 'Player One',
     userPlayerNumber: 0,
     numPlayers: 4,
     playerHands: [['??', '??', '??'], ['??', '??', '??'], ['??', '??', '??'], ['??', '??', '??']],
@@ -102,9 +104,17 @@ export const gameStateSlice = createSlice({
             state.playerHands = newHands;
             console.log(`${player} -- hands updated`)
         },
-        updatePlayers: (state, { payload }: PayloadAction<Array<string>>) => {
-            state.players = payload;
+        updatePlayers: (state, { payload }: PayloadAction<[string, number]>) => {
+            let userIndex = state.players.indexOf(payload[0])
+            if (userIndex !== -1) {
+                state.players[userIndex] = null;
+            }
+            state.players[payload[1]] = payload[0];
             console.log(`current players ${payload}`);
+        },
+        updateUsername: (state, { payload }: PayloadAction<string>) => {
+            state.username = payload;
+            console.log('Username changed to ', payload);
         },
         resetState: (state, action) => {
             return {// reset everything other than login info
@@ -115,7 +125,7 @@ export const gameStateSlice = createSlice({
 });
 
 export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
-    resetState, dealCards, getNewQuestion, startNextTurn
+    resetState, dealCards, getNewQuestion, startNextTurn, updateUsername,
 } = gameStateSlice.actions;
 
 export const selectDeck = (state) => state.gameState.deck;
@@ -125,5 +135,6 @@ export const selectPlayerHands = (state) => state.gameState.playerHands;
 export const selectQuestionBank = (state) => state.gameState.questionBank;
 export const selectCurrentQuestion = (state) => state.gameState.currentQuestion;
 export const selectNumPlayers = (state) => state.gameState.numPlayers;
+export const selectUsername = (state) => state.gameState.username;
 
 export default gameStateSlice.reducer;
