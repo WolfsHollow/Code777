@@ -1,17 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useUpdateEffect, { useAppSelector } from '../hooks/customHook'
 import Card from './Card'
 import { selectGuessNumbers, selectUsername } from './gameStateSlice'
 
 type props = {
-    playerName: string,
-    cards: Array<[string, number]>
+    playerName: string
 }
 
 
+const UserPlayerContainer = ({ playerName }: props) => {
 
-const PlayerContainer = ({ playerName, cards }: props) => {
-    // [['gre', 1],['gre', 1],['gre', 1]]
+    const username = useAppSelector(selectUsername);
+    const guessNumbers = useAppSelector(selectGuessNumbers);
+
+    const questionCards: Array<[string, any]> = [['?', '?'], ['?', '?'], ['?', '?']];
+    const [cards, setCards] = useState(questionCards)
+
+    useUpdateEffect(() => {
+        setCards(guessNumbers);
+    }, [guessNumbers])
+
     return (
         <div className='playerContainer'>
             <div className='playerNameContainer'>
@@ -25,4 +33,4 @@ const PlayerContainer = ({ playerName, cards }: props) => {
     )
 }
 
-export default PlayerContainer
+export default UserPlayerContainer

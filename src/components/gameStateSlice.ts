@@ -11,6 +11,7 @@ interface gameState {
     userPlayerNumber: number,
     numPlayers: number,
     playerHands: Array<Array<string>>,
+    guessNumbers: Array<[string, string | number]>,
     questionBank: Array<number>
 }
 
@@ -23,6 +24,7 @@ const initialState: gameState = {
     userPlayerNumber: 0,
     numPlayers: 4,
     playerHands: [['??', '??', '??'], ['??', '??', '??'], ['??', '??', '??'], ['??', '??', '??']],
+    guessNumbers: [],
     questionBank: QUESTION_BANK,
 };
 
@@ -89,6 +91,15 @@ export const gameStateSlice = createSlice({
             state.questionBank = shuffle(QUESTION_BANK);
             console.log('question bank updated');
         },
+        addGuessNumber: (state, { payload }: PayloadAction<[string, number]>) => {
+            console.log('payload', payload)
+            state.guessNumbers.push(payload)
+        },
+        removeGuessNumber: (state, { payload }: PayloadAction<number>) => {
+            console.log(payload);
+            state.guessNumbers.splice(payload, 1);
+            console.log('removed number from guessNumber')
+        },
         updateNumPlayers: (state, { payload }: PayloadAction<number>) => {
             state.numPlayers = payload;
         },
@@ -109,8 +120,10 @@ export const gameStateSlice = createSlice({
             if (userIndex !== -1) {
                 state.players[userIndex] = null;
             }
+            state.userPlayerNumber = payload[1];
             state.players[payload[1]] = payload[0];
             console.log(`current players ${payload}`);
+            console.log(`userPlayerNumber is now ${state.userPlayerNumber}`);
         },
         updateUsername: (state, { payload }: PayloadAction<string>) => {
             state.username = payload;
@@ -125,7 +138,7 @@ export const gameStateSlice = createSlice({
 });
 
 export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
-    resetState, dealCards, getNewQuestion, startNextTurn, updateUsername,
+    resetState, dealCards, getNewQuestion, startNextTurn, updateUsername, addGuessNumber, removeGuessNumber,
 } = gameStateSlice.actions;
 
 export const selectDeck = (state) => state.gameState.deck;
@@ -136,5 +149,7 @@ export const selectQuestionBank = (state) => state.gameState.questionBank;
 export const selectCurrentQuestion = (state) => state.gameState.currentQuestion;
 export const selectNumPlayers = (state) => state.gameState.numPlayers;
 export const selectUsername = (state) => state.gameState.username;
+export const selectUserPlayerNumber = (state) => state.gameState.userPlayerNumber;
+export const selectGuessNumbers = (state) => state.gameState.guessNumbers;
 
 export default gameStateSlice.reducer;
