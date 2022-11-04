@@ -41,6 +41,9 @@ const Game = () => {
     const userPlayerNumber = useAppSelector(selectUserPlayerNumber);
     const guessNumbers = useAppSelector(selectGuessNumbers);
 
+    const [reset, setReset] = useState(false);
+    // const reset = useRef<boolean>(false);
+
     const getOpponentArray = () => {
         let opponentPlayers = [0, 1, 2, 3];
         opponentPlayers = opponentPlayers.filter(index => index !== userPlayerNumber && index < players.length)
@@ -55,11 +58,8 @@ const Game = () => {
 
 
     const numberDivs = NUMBERS.map((entry: [string, number, string], index: number) =>
-        <Number color={entry[0]} value={entry[1]} grid={entry[2]} key={index} />
+        <Number color={entry[0]} value={entry[1]} grid={entry[2]} key={index} reset={reset} />
     )
-
-    console.log(playerHands);
-
 
     const startGame = () => {
 
@@ -70,7 +70,10 @@ const Game = () => {
 
 
     const handleReset = () => {
-        console.log('reset??!');
+        setReset(true);
+        setTimeout(() => {
+            setReset(false);
+        }, 100)
     }
 
     const submitGuess = () => {

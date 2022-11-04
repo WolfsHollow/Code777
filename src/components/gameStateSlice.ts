@@ -119,6 +119,9 @@ export const gameStateSlice = createSlice({
             state.guessNumbers.splice(payload, 1);
             console.log('removed number from guessNumber')
         },
+        resetNumberCard: (state, { payload }: PayloadAction<number>) => {
+            state.guessNumbers = [];
+        },
         updateNumPlayers: (state, { payload }: PayloadAction<number>) => {
             state.numPlayers = payload;
         },
@@ -158,7 +161,7 @@ export const gameStateSlice = createSlice({
 
 export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
     resetState, dealCards, getNewQuestion, startNextTurn, updateUsername, addGuessNumber, removeGuessNumber,
-    madeIncorrectGuess, madeCorrectGuess,
+    madeIncorrectGuess, madeCorrectGuess, resetNumberCard,
 } = gameStateSlice.actions;
 
 export const selectDeck = (state) => state.gameState.deck;
