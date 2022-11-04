@@ -16,11 +16,15 @@ import {
     getNewQuestion,
     makeQuestionBankList,
     selectUserPlayerNumber,
-    selectUsername
+    selectUsername,
+    selectGuessNumbers,
+    madeCorrectGuess,
+    madeIncorrectGuess
 
 } from '../components/gameStateSlice'
 import { useAppDispatch, useAppSelector } from '../hooks/customHook'
 import UserPlayerContainer from '../components/UserPlayerContainer'
+import Button from '../components/Button'
 
 const Game = () => {
 
@@ -35,6 +39,7 @@ const Game = () => {
     const questionNumber = useAppSelector(selectCurrentQuestion);
     const username = useAppSelector(selectUsername);
     const userPlayerNumber = useAppSelector(selectUserPlayerNumber);
+    const guessNumbers = useAppSelector(selectGuessNumbers);
 
     const getOpponentArray = () => {
         let opponentPlayers = [0, 1, 2, 3];
@@ -63,18 +68,44 @@ const Game = () => {
         dispatch(getNewQuestion())
     }
 
+
+    const handleReset = () => {
+        console.log('reset??!');
+    }
+
+    const submitGuess = () => {
+        console.log('submitted');
+        if (guessNumbers.length === 3) {
+            let userHand = playerHands[userPlayerNumber];
+            let handNumbers = userHand.map(card => card[1]);
+            let guessNumbersOnly = guessNumbers.map(card => card[1]);
+            console.log(guessNumbersOnly, handNumbers);
+
+            let unionArray = handNumbers.map(number => {
+                let index = guessNumbersOnly.indexOf(number)
+                if (index === -1) {
+                    guessNumbersOnly.splice(index, 1)
+                }
+                return index
+            })
+            if (guessNumbersOnly.length === 3) {
+                dispatch(madeCorrectGuess())
+            }
+            else dispatch(madeIncorrectGuess())
+        }
+    }
+
     useEffect(() => {
         startGame();
-
     }, [])
 
     return (
         <div className='gameplay'>
             <Question question={questionNumber} />
             <div className='playerBoardContainer'>
-                <PlayerContainer playerName={players[playerArray.current.opponentArray[0]]} cards={playerHands[playerArray.current.opponentArray[0]]} key={'player0'} />
-                <PlayerContainer playerName={players[playerArray.current.opponentArray[1]]} cards={playerHands[playerArray.current.opponentArray[1]]} key={'player1'} />
-                <PlayerContainer playerName={players[playerArray.current.opponentArray[2]]} cards={playerHands[playerArray.current.opponentArray[2]]} key={'player2'} />
+                <PlayerContainer playerName={players[playerArray.current.opponentArray[0]]} cards={playerHands[playerArray.current.opponentArray[0]]} playerNumber={playerArray.current.opponentArray[0]} key={'player0'} />
+                <PlayerContainer playerName={players[playerArray.current.opponentArray[1]]} cards={playerHands[playerArray.current.opponentArray[1]]} playerNumber={playerArray.current.opponentArray[0]} key={'player1'} />
+                <PlayerContainer playerName={players[playerArray.current.opponentArray[2]]} cards={playerHands[playerArray.current.opponentArray[2]]} playerNumber={playerArray.current.opponentArray[0]} key={'player2'} />
             </div>
             <div className='chat'></div>
             <div className='numberNoteCardContainer'>
@@ -82,10 +113,12 @@ const Game = () => {
                     <UserPlayerContainer playerName={username} />
                 </div>
                 <div className='numberNoteCard'>
+                    <Button text='Reset' onClick={handleReset} buttonStyle={{ gridArea: "3/2/3/4" }} />
+                    <Button text='Submit' onClick={submitGuess} buttonStyle={{ gridArea: "3/12/3/14" }} />
                     {numberDivs}
                 </div>
             </div>
-        </div >
+        </div>
     )
 }
 

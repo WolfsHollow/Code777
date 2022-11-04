@@ -10,9 +10,10 @@ interface gameState {
     username: string,
     userPlayerNumber: number,
     numPlayers: number,
-    playerHands: Array<Array<string>>,
+    playerHands: Array<Array<[string, string | number]>>,
     guessNumbers: Array<[string, string | number]>,
-    questionBank: Array<number>
+    questionBank: Array<number>,
+    playerScores: Array<number>,
 }
 
 const initialState: gameState = {
@@ -23,9 +24,10 @@ const initialState: gameState = {
     username: 'Player One',
     userPlayerNumber: 0,
     numPlayers: 4,
-    playerHands: [['??', '??', '??'], ['??', '??', '??'], ['??', '??', '??'], ['??', '??', '??']],
+    playerHands: [[['?', '?'], ['?', '?'], ['?', '?']], [['?', '?'], ['?', '?'], ['?', '?']], [['?', '?'], ['?', '?'], ['?', '?']], [['?', '?'], ['?', '?'], ['?', '?']]],
     guessNumbers: [],
     questionBank: QUESTION_BANK,
+    playerScores: [0, 0, 0, 0],
 };
 
 export const gameStateSlice = createSlice({
@@ -53,6 +55,9 @@ export const gameStateSlice = createSlice({
         updateDeck: (state, { payload }: PayloadAction<Array<[string, number]>>) => {
             state.deck = payload;
             console.log('deck updated');
+        },
+        gameOver: (state, { payload }: PayloadAction<string>) => {
+            console.log(`${payload} wins!`)
         },
         getNewQuestion: (state, { payload }: PayloadAction<number>) => {
             if (state.questionBank.length === 0) {
@@ -87,6 +92,20 @@ export const gameStateSlice = createSlice({
             state.playerTurn = playerIndex;
             console.log(`current player: ${state.playerTurn}`)
         },
+        madeCorrectGuess: (state, { payload }: PayloadAction<number>) => {
+            state.playerScores[state.userPlayerNumber]++;
+            let newDeck = [...state.deck];
+            let newHand = newDeck.splice(0, 3);
+            state.playerHands[state.userPlayerNumber] = newHand;
+            state.deck = newDeck;
+        },
+        madeIncorrectGuess: (state, { payload }: PayloadAction<number>) => {
+            let newDeck = [...state.deck];
+            let newHand = newDeck.splice(0, 3);
+            state.playerHands[state.userPlayerNumber] = newHand;
+            state.deck = newDeck;
+        },
+
         makeQuestionBankList: (state, { payload }: PayloadAction<Array<number>>) => {
             state.questionBank = shuffle(QUESTION_BANK);
             console.log('question bank updated');
@@ -104,16 +123,16 @@ export const gameStateSlice = createSlice({
             state.numPlayers = payload;
         },
         updatePlayerHands: (state, { payload }: PayloadAction<[Array<number>, Array<Array<string>>]>) => {
-            let player = payload[0];
-            let hand = payload[1];
-            let newHands = state.playerHands;
+            // let player = payload[0];
+            // let hand = payload[1];
+            // let newHands = state.playerHands;
 
-            for (let index in player) {
-                newHands[index] = hand[index]
-            }
+            // for (let index in player) {
+            //     newHands[index] = hand[index]
+            // }
 
-            state.playerHands = newHands;
-            console.log(`${player} -- hands updated`)
+            // state.playerHands = newHands;
+            // console.log(`${player} -- hands updated`)
         },
         updatePlayers: (state, { payload }: PayloadAction<[string, number]>) => {
             let userIndex = state.players.indexOf(payload[0])
@@ -139,6 +158,7 @@ export const gameStateSlice = createSlice({
 
 export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
     resetState, dealCards, getNewQuestion, startNextTurn, updateUsername, addGuessNumber, removeGuessNumber,
+    madeIncorrectGuess, madeCorrectGuess,
 } = gameStateSlice.actions;
 
 export const selectDeck = (state) => state.gameState.deck;
@@ -151,5 +171,6 @@ export const selectNumPlayers = (state) => state.gameState.numPlayers;
 export const selectUsername = (state) => state.gameState.username;
 export const selectUserPlayerNumber = (state) => state.gameState.userPlayerNumber;
 export const selectGuessNumbers = (state) => state.gameState.guessNumbers;
+export const selectPlayerScores = (state) => state.gameState.playerScores;
 
 export default gameStateSlice.reducer;

@@ -402,6 +402,18 @@ code {
   user-select: none;
 }
 
+.numberNoteCard>button {
+  height: 100%;
+  width: 100%;
+  font-size: 1rem;
+  /* grid-area: 8 / 1 / 9 / 3; */
+  text-align: center;
+  /* line-height: 5rem; */
+  border-radius: 10px;
+  -webkit-text-stroke-width: .3px;
+  user-select: none;
+}
+
 /*#region colors */
 .blk {
   color: var(--black);
