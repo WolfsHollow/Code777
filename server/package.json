@@ -15,6 +15,7 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "type": "module",
     "dependencies": {
         "@babel/cli": "^7.19.3",
         "@babel/core": "^7.20.2",

@@ -1,73 +1,116 @@
-// import { v4 as uuidv4 } from 'uuid';
-// const { TYPE } = require('./constants')
+import { v4 as uuidv4 } from 'uuid';
+import { WebSocketServer } from 'ws';
+import { DECK, QUESTION_BANK, TYPE } from './constants.js'
+import { shuffle } from './helpers.js';
 
-const { v4: uuidv4 } = require('uuid');
-const WebSocket = require("ws");
-
-
-const wss = new WebSocket.Server({ port: 8082 });
-
-const TYPE = {
-    JOIN: "join",
-    LEAVE: "leave",
-    MESSAGE: "message",
-    SUBSCRIBE: "subscribe",
-    GAME_ACTION: "gameAction",
-}
+const wss = new WebSocketServer({ port: 8082 });
 
 const rooms = {};
+const roomData = {};
+const USER_LIST = 'userList';
+const roomClients = {};
 
 wss.on("connection", socket => {
+    let user;
 
+    const broadcastToRoom = (roomID, message) => {
+        Object.keys(roomClients[roomID]).forEach(client => {
+            roomClients[roomID][client].send(message)
+        })
+    }
 
-    console.log(TYPE.JOIN);
-    let userID = uuidv4(); // create here a uuid for this connection
+    const initializeGame = (roomID) => {
+        let deck = roomData[roomID]['deck'];
+        let questionList = roomData[roomID]['questionBank'];
+        let players = rooms[roomID];
+
+        let message = {
+            sender: user,
+            type: TYPE.INITIALIZE_GAME,
+            payload: { deck, questionList, players },
+        }
+
+        broadcastToRoom(roomID, JSON.stringify(message));
+    }
+
+    const sendPlayerData = (roomID) => {
+        let message = {
+            sender: user,
+            type: TYPE.LOBBY_INFO,
+            payload: rooms[roomID],
+        }
+
+        broadcastToRoom(roomID, JSON.stringify(message));
+    }
 
     const subscribe = (roomID, userID) => {
-        rooms[roomID].push(userID);
-    }
-
-    socket.on('open', () => {
-        subscribe('lobbyChat', userID)
-    })
-
-
-    const join = (roomID, userID) => {
+        user = userID;
         // create room if doesn't exist
-        if (!rooms[roomID]) rooms[rooms] = {};
+        if (!rooms[roomID]) {
+            rooms[roomID] = {};
+            roomData[roomID] = {};
+            roomClients[roomID] = {};
 
+            //initialize data
+            if (roomID !== USER_LIST) {
+                let deck = shuffle(DECK);
+                let questionList = shuffle(QUESTION_BANK)
+
+                roomData[roomID]['deck'] = deck;
+                roomData[roomID]['questionBank'] = questionList;
+            }
+        }
         //add user to room
-        if (!rooms[roomID][userID]) rooms[roomID][userID] = userID;
+        if (!rooms[roomID][userID]) {
+
+            rooms[roomID][userID] = -1; // add player and playerNumber
+            roomClients[roomID][userID] = socket; // add client to list
+
+            if (roomID !== USER_LIST) {
+                sendPlayerData(roomID);
+            }
+        }
     }
 
-    const leave = (roomID, userID) => {
+    const leave = (array, roomID, userID) => {
         // not present: do nothing
-        if (!rooms[roomID][userID]) return;
+        if (!array[roomID][userID]) return;
 
         // if the one exiting is the last one, destroy the roomID
-        if (Object.keys(rooms[roomID]).length === 1) delete rooms[roomID];
+        if (Object.keys(array[roomID]).length === 1) {
+            delete array[roomID];
+            if (roomData[roomID]) delete roomData[roomID];
+        }
 
         // otherwise simply leave the roomID
-        else delete rooms[roomID][userID];
+        else delete array[roomID][userID];
     };
 
 
     socket.on('message', (data, isBinary) => {
         let message = isBinary ? data : data.toString();
 
+        console.log('message received', message);
         let { sender, type, payload } = JSON.parse(message);
 
         switch (type) {
             case TYPE.JOIN:
-                join(payload, sender)
+                // user = payload;
+                console.log(type)
                 break;
             case TYPE.LEAVE:
                 leave(payload, sender)
                 break;
-            case TYPE.GAME_ACTION:
+            case TYPE.GUESS:
+
+                break;
+            case TYPE.NEXT_QUESTION:
+                break;
+            case TYPE.LOBBY_INFO:
                 break;
             case TYPE.SUBSCRIBE:
-                subscribe(payload, sender)
+                subscribe(payload, sender) //room id, sender
+                sendPlayerData(payload) //room id
                 break;
             case TYPE.MESSAGE:
                 console.log('there was a message', payload);
@@ -79,10 +122,11 @@ wss.on("connection", socket => {
     })
 
 
-
-
     socket.on("close", () => {
         // for each room, remove the closed socket
-        Object.keys(rooms).forEach(room => leave(room));
+        Object.keys(rooms).forEach(room => leave(rooms, room, user));
+        Object.keys(roomClients).forEach(room => leave(roomClients, room, user));
+
+        console.log('someone left', user);
     });
 });

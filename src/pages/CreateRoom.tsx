@@ -20,7 +20,7 @@ const CreateRoom = () => {
     const dispatch = useAppDispatch();
 
     const handleCreateRoom = () => {
-
+        ws.connect()
     }
 
     const handleJoinClick = (event) => {
@@ -28,7 +28,7 @@ const CreateRoom = () => {
     }
 
     const handleJoinRoom = () => {
-        ws.subscribe(roomID.current.value)
+        ws.connect(roomID.current.value);
     }
 
     return (

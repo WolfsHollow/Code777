@@ -15,10 +15,9 @@ const Lobby = () => {
 
     const username = useAppSelector(selectUsername);
 
-    const [players, setPlayers] = useState(['me', 'you', 'dupree']);
     const [chatMessages, setChatMessages] = useState([]);
 
-    let playersList = players.map((user, index) => { return <div className='lobby-playerName' key={index} > {user}</div> })
+    let playersList = ws.playersInRoom.map((user, index) => { return <div className='lobby-playerName' key={index} > {user}</div> })
 
     const handleMessage = (event) => {
         let value = ws.handleMessage(event);
