@@ -1,10 +1,15 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { getRandomNumber } from '../utilities/helpers'
 import Button from '../components/Button'
 import Question from '../components/Question'
 import { questionList } from '../components/questionList'
+import { useAppDispatch } from '../hooks/customHook'
+import { updateUsername } from '../components/gameStateSlice'
 
 const Homepage = () => {
+
+    const welcome = `Welcome to Code 777\n
+    To Continue, please choose a nickname.\n`
 
     const instructions = `
     1. Click on the CREATE ROOM button.\n
@@ -14,16 +19,26 @@ const Homepage = () => {
     5. Enjoy the game!\n
     `;
 
-    return (
-        <div className='homepage changeAnimation'>
-            <h3>CODE 777</h3>
-            <Button text='Create Room' routesTo='room/create' />
-            <div>
-                <p>How to play:</p>
-                <hr />
-                <span style={{ whiteSpace: "pre-wrap" }}>{instructions}</span>
-            </div>
+    const username = useRef(null);
 
+    const dispatch = useAppDispatch();
+
+    const handleUsernameSubmit = () => {
+        dispatch(updateUsername(username.current.value));
+    }
+
+    return (
+        <div className="homepage changeAnimation">
+            <div className='createRoomForm'>
+                <span className='createRoomInstructions'>{welcome}</span>
+                <br />
+                <input type="text" id="username" className="userNameInput" name="username" ref={username} />
+                <Button text='Confirm' buttonStyle={{ alignSelf: 'center' }} onClick={handleUsernameSubmit} routeAndClick={true} routesTo='room/create' />
+            </div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+                <hr />
+                {instructions}
+            </div>
         </div>
     )
 }

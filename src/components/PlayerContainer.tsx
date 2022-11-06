@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import useUpdateEffect, { useAppSelector } from '../hooks/customHook'
 import Card from './Card'
-import { selectGuessNumbers, selectPlayerScores, selectUsername } from './gameStateSlice'
+import { selectGuessNumbers, selectPlayerScores, selectPlayerTurn, selectUsername } from './gameStateSlice'
 
 type props = {
     playerName: string,
@@ -9,16 +9,27 @@ type props = {
     playerNumber: number,
 }
 
-
-
 const PlayerContainer = ({ playerName, cards, playerNumber }: props) => {
-    // [['gre', 1],['gre', 1],['gre', 1]]
-
     const playerScores = useAppSelector(selectPlayerScores);
+    const [color, setColor] = useState('white');
+    const [borderStyle, setBorderStyle] = useState('1px solid black')
+
+    const playerTurn = useAppSelector(selectPlayerTurn);
+
+    useEffect(() => {
+        if (playerTurn === playerNumber) {
+            setColor('red');
+            setBorderStyle('5px solid blue');
+        }
+        else if (playerTurn !== playerNumber && color === 'red') {
+            setColor('white')
+            setBorderStyle('1px solid black')
+        }
+    }, [playerTurn])
 
     return (
-        <div className='playerContainer'>
-            <div className='playerNameContainer'>
+        <div className='playerContainer' style={{ backgroundColor: color, border: borderStyle }}>
+            <div className='playerNameContainer' >
                 <div className='playerName'>{playerName}</div>
                 <div className='score'>{playerScores[playerNumber]}</div>
             </div>

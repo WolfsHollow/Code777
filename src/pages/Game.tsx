@@ -42,7 +42,7 @@ const Game = () => {
     const guessNumbers = useAppSelector(selectGuessNumbers);
 
     const [reset, setReset] = useState(false);
-    // const reset = useRef<boolean>(false);
+    const [questionHistory, setQuestionHistory] = useState([]);
 
     const getOpponentArray = () => {
         let opponentPlayers = [0, 1, 2, 3];
@@ -77,7 +77,6 @@ const Game = () => {
     }
 
     const submitGuess = () => {
-        console.log('submitted');
         if (guessNumbers.length === 3) {
             let userHand = playerHands[userPlayerNumber];
             let handNumbers = userHand.map(card => card[1]);
@@ -107,13 +106,13 @@ const Game = () => {
             <Question question={questionNumber} />
             <div className='playerBoardContainer'>
                 <PlayerContainer playerName={players[playerArray.current.opponentArray[0]]} cards={playerHands[playerArray.current.opponentArray[0]]} playerNumber={playerArray.current.opponentArray[0]} key={'player0'} />
-                <PlayerContainer playerName={players[playerArray.current.opponentArray[1]]} cards={playerHands[playerArray.current.opponentArray[1]]} playerNumber={playerArray.current.opponentArray[0]} key={'player1'} />
-                <PlayerContainer playerName={players[playerArray.current.opponentArray[2]]} cards={playerHands[playerArray.current.opponentArray[2]]} playerNumber={playerArray.current.opponentArray[0]} key={'player2'} />
+                <PlayerContainer playerName={players[playerArray.current.opponentArray[1]]} cards={playerHands[playerArray.current.opponentArray[1]]} playerNumber={playerArray.current.opponentArray[1]} key={'player1'} />
+                <PlayerContainer playerName={players[playerArray.current.opponentArray[2]]} cards={playerHands[playerArray.current.opponentArray[2]]} playerNumber={playerArray.current.opponentArray[2]} key={'player2'} />
             </div>
             <div className='chat'></div>
             <div className='numberNoteCardContainer'>
                 <div className='editButtons'>
-                    <UserPlayerContainer playerName={username} />
+                    <UserPlayerContainer />
                 </div>
                 <div className='numberNoteCard'>
                     <Button text='Reset' onClick={handleReset} buttonStyle={{ gridArea: "3/2/3/4" }} />

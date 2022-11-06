@@ -1,13 +1,29 @@
-import React from 'react'
+import React, { useContext, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import { selectUsername } from '../components/gameStateSlice'
 import LobbyPlayerBox from '../components/LobbyPlayerBox'
-import { useAppSelector } from '../hooks/customHook'
+import { WebSocketContext } from '../components/WebSocketComponent'
+import { useAppDispatch, useAppSelector } from '../hooks/customHook'
 
 const Lobby = () => {
 
+    let ws = useContext(WebSocketContext);
+
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
     const username = useAppSelector(selectUsername);
-    console.log(username);
+
+    const [players, setPlayers] = useState(['me', 'you', 'dupree']);
+    const [chatMessages, setChatMessages] = useState([]);
+
+    let playersList = players.map((user, index) => { return <div className='lobby-playerName' key={index} > {user}</div> })
+
+    const handleMessage = (event) => {
+        let value = ws.handleMessage(event);
+        // setUserData({ ...userData, message: value })
+    }
 
     return (
         <div className='lobby'>
@@ -23,8 +39,10 @@ const Lobby = () => {
                 </div>
             </div>
             <div className='rightContainer'>
-                <div className='playerList'></div>
-                <div className='chatBox'></div>
+                <div className='playerList'>{playersList}</div>
+                <div className='chatBox'>
+                    {/* {ws.publicChats.map((chat, index) => <div key={index}>{chat}</div>)} */}
+                </div>
             </div>
         </div>
     )

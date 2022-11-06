@@ -1,29 +1,52 @@
-import React, { useRef } from 'react'
+import React, { MouseEvent, MouseEventHandler, useContext, useRef, useState } from 'react'
 import Button from '../components/Button'
 import { updateUsername } from '../components/gameStateSlice';
+import { WebSocketContext } from '../components/WebSocketComponent';
 import { useAppDispatch } from '../hooks/customHook'
+
+interface Iclick {
+    handleClick: (e: MouseEvent<HTMLButtonElement>) => void;
+}
 
 const CreateRoom = () => {
 
-    const username = useRef(null);
+    const ws = useContext(WebSocketContext);
+
+    const roomID = useRef(null);
+
+
+    const [isJoiningGame, setIsJoiningGame] = useState(false);
 
     const dispatch = useAppDispatch();
 
-    const handleUsernameSubmit = () => {
-        dispatch(updateUsername(username.current.value));
+    const handleCreateRoom = () => {
+
+    }
+
+    const handleJoinClick = (event) => {
+        setIsJoiningGame(true);
+    }
+
+    const handleJoinRoom = () => {
+        ws.subscribe(roomID.current.value)
     }
 
     return (
-        <div>
-            <div className='Login Form'>
-                <form className='loginForm'>
-                    <label htmlFor="username">
-                        <span>User Name</span>
-                        <input type="text" id="username" name="username" ref={username} />
-                    </label>
-                </form>
+        <div id="createRoomPage">
+            <div className='createRoomForm'>
+                {isJoiningGame ?
+                    <>
+                        <div className="createRoomInstructions">Please enter a room name</div>
+                        <input type="text" id="roomID" className="roomInput" name="roomID" ref={roomID} />
+                        <Button text='Join' buttonStyle={{ alignSelf: 'center' }} onClick={handleJoinRoom} routeAndClick={true} routesTo='room' />
+                    </>
+                    :
+                    <>
+                        <Button text='Create Room' buttonStyle={{ alignSelf: 'center' }} onClick={handleCreateRoom} routeAndClick={true} routesTo='room' />
+                        <Button text='Join a Room' buttonStyle={{ alignSelf: 'center' }} onClick={handleJoinClick} />
+                    </>
+                }
             </div>
-            <Button className='confirmButton' text='Create Room' onClick={handleUsernameSubmit} routeAndClick={true} routesTo='room' />
         </div>
     )
 }

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 import { Route, useNavigate } from 'react-router-dom'
 
 type ButtonProps = {
     text: string,
     routesTo?: string,
-    onClick?: () => void,
+    onClick?: any,
     routeAndClick?: boolean,
     className?: string,
     buttonStyle?: React.CSSProperties,
@@ -21,7 +21,6 @@ const Button = ({ text, routesTo, onClick, routeAndClick, className, buttonStyle
         if (routesTo === 'homepage') { // need to change url to '/'
             routesTo = '';
         }
-
 
         if (routeAndClick) {
             onClick();

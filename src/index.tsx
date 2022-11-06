@@ -5,13 +5,17 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './data/store';
+import WebSocketProvider, { WebSocketContext } from './components/WebSocketComponent';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <WebSocketProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </WebSocketProvider>
   </Provider>
 );

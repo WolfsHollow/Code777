@@ -204,6 +204,51 @@ code {
 
 /*#endregion end animation */
 
+/*#region createroom*/
+
+#createRoomPage {
+  background-color: lightblue;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+.createRoomForm {
+  height: 400px;
+  width: 500px;
+  border: 2px solid black;
+  border-radius: 30px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+}
+
+.createRoomInstructions {
+  white-space: pre-wrap;
+  text-align: center;
+}
+
+.userNameInput {
+  width: 50%;
+  height: 50px;
+  font-size: 3rem;
+  align-self: center;
+}
+
+.roomInput {
+  width: 50%;
+  height: 50px;
+  font-size: 1rem;
+  align-self: center;
+}
+
+
+/*#endregion createroom*/
+
+
 /*#region lobby*/
 .lobby {
   background-color: purple;
@@ -273,13 +318,24 @@ code {
 .oddPlayer {}
 
 .playerList {
-  height: 60%;
+  height: 40%;
   width: 100%;
   background-color: aliceblue;
 }
 
+
+.lobby-playerName {
+  height: 25%;
+  font-size: 3rem;
+  text-align: center;
+  line-height: 5rem;
+  border: 2px solid black;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .chatBox {
-  height: 40%;
+  height: 60%;
   width: 100%;
   background-color: bisque;
 }
