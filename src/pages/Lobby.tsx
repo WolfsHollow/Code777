@@ -26,9 +26,9 @@ const Lobby = () => {
         // setUserData({ ...userData, message: value })
     }
 
-    useUpdateEffect(() => {
-        ws.sendMessage(username, TYPE.LOBBY_INFO, players)
-    }, [players])
+    // useUpdateEffect(() => {
+    //     ws.sendMessage(username, TYPE.LOBBY_INFO, players)
+    // }, [players])
 
     return (
         <div className='lobby'>

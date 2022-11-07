@@ -70,7 +70,6 @@ const WebSocketComponent = ({ children }) => {
             }
         })
         setPlayersInRoom(playerList);
-        console.log(playerList);
         dispatch(updatePlayersFromMessage(playerOrder));
     }
 

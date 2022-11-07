@@ -2,37 +2,39 @@ import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { DECK, QUESTION_BANK, TYPE } from './constants.js'
 import { shuffle } from './helpers.js';
+import { RoomData } from './RoomData.js';
 
 const wss = new WebSocketServer({ port: 8082 });
 
-const rooms = {};
-const roomData = {};
+const rooms = {}; // {roomID: {player: playerNumber}}
+const roomData = {}; // {roomID: {deck:deck, questions: questions, players: [players]}}
 const USER_LIST = 'userList';
-const roomClients = {};
 
 wss.on("connection", socket => {
     let user;
     let roomsJoined = [];
 
     const broadcastToRoom = (roomID, message) => {
-        if (roomClients[roomID]) {
-            Object.keys(roomClients[roomID]).forEach(client => {
-                roomClients[roomID][client].send(message)
+        if (rooms[roomID]) {
+            Object.entries(rooms[roomID].clients).forEach(([userID, client]) => {
+                // if (userID !== user) {
+                client.send(message)
+                // }
             })
         }
     }
 
     const initializeGame = (roomID) => {
-        let deck = roomData[roomID]['deck'];
-        let questionList = roomData[roomID]['questionBank'];
-        let players = rooms[roomID];
+
+        let deck = roomData[roomID].deck;
+        let questionList = roomData[roomID].questions;
+        let players = rooms[roomID].players;
 
         let message = {
             sender: user,
             type: TYPE.INITIALIZE_GAME,
             payload: { deck, questionList, players },
         }
-
         broadcastToRoom(roomID, JSON.stringify(message));
     }
 
@@ -40,7 +42,7 @@ wss.on("connection", socket => {
         let message = {
             sender: user,
             type: TYPE.LOBBY_INFO,
-            payload: rooms[roomID],
+            payload: rooms[roomID].players,
         }
 
         broadcastToRoom(roomID, JSON.stringify(message));
@@ -50,47 +52,19 @@ wss.on("connection", socket => {
         user = userID;
         // create room if doesn't exist
         if (!rooms[roomID]) {
-            rooms[roomID] = {};
-            roomData[roomID] = {};
-            roomClients[roomID] = {};
-
-            //initialize data
-            if (roomID !== USER_LIST) {
-                let deck = shuffle(DECK);
-                let questionList = shuffle(QUESTION_BANK)
-
-                roomData[roomID]['deck'] = deck;
-                roomData[roomID]['questionBank'] = questionList;
-                roomData[roomID]['players'] = [null, null, null, null];
-            }
+            rooms[roomID] = new RoomData(roomID);
         }
+
         //add user to room
         if (!rooms[roomID][userID]) {
 
-            rooms[roomID][userID] = -1; // add player and playerNumber
-            roomClients[roomID][userID] = socket; // add client to list
+            rooms[roomID].add(user, socket);
+
             roomsJoined.push(roomID)
 
-            if (roomID !== USER_LIST) {
-                sendPlayerData(roomID);
-            }
+            sendPlayerData(roomID);
         }
     }
-
-    const leave = (array, roomID, userID) => {
-        // not present: do nothing
-        if (!array[roomID][userID]) return;
-
-        // if the one exiting is the last one, destroy the roomID
-        if (Object.keys(array[roomID]).length === 1) {
-            delete array[roomID];
-            if (roomData[roomID]) delete roomData[roomID];
-        }
-
-        // otherwise simply leave the roomID
-        else delete array[roomID][userID];
-    };
-
 
     socket.on('message', (data, isBinary) => {
         let message = isBinary ? data : data.toString();
@@ -103,17 +77,14 @@ wss.on("connection", socket => {
                 // user = payload;
                 console.log('user joined')
                 break;
-            case TYPE.LEAVE:
-                leave(payload, sender)
-                break;
             case TYPE.GUESS:
 
                 break;
             case TYPE.NEXT_QUESTION:
                 break;
             case TYPE.LOBBY_INFO:
-                roomData[roomID]['players'] = payload;
-                broadcastToRoom(roomID, JSON.stringify(roomData[roomID]['players']))
+                rooms[roomID].players = payload;
+                broadcastToRoom(roomID, message)
                 break;
             case TYPE.SUBSCRIBE:
                 subscribe(payload, sender) //room id, sender
@@ -130,14 +101,12 @@ wss.on("connection", socket => {
 
     socket.on("close", () => {
         // for each room, remove the closed socket
-
-        Object.keys(rooms).forEach(room => leave(rooms, room, user));
-        Object.keys(roomClients).forEach(room => leave(roomClients, room, user));
-
         console.log(user, ' left');
 
         roomsJoined.forEach(room => {
+            let isEmpty = rooms[room].remove(user);
             sendPlayerData(room)
+            if (isEmpty) delete rooms[room]
         })
     });
 });
