@@ -8,6 +8,18 @@ export const COLORS = {
     YELLOW: "yel",
 }
 
+
+export const TYPE = {
+    JOIN: "join",
+    LEAVE: "leave",
+    MESSAGE: "message",
+    SUBSCRIBE: "subscribe",
+    LOBBY_INFO: "lobbyInfo",
+    GUESS: "guess",
+    NEXT_QUESTION: "nextQuestion",
+    INITIALIZE_GAME: "initializeGame",
+}
+
 export const NUMBERS = [
     [COLORS.GREEN, 1, "2/7/3/9"],
     [COLORS.YELLOW, 2, "3/6/4/8"], [COLORS.YELLOW, 2, "3/8/4/10"],

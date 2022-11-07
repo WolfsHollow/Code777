@@ -1,10 +1,11 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
-import { selectUsername } from '../components/gameStateSlice'
+import { selectPlayers, selectUsername } from '../components/gameStateSlice'
 import LobbyPlayerBox from '../components/LobbyPlayerBox'
 import { WebSocketContext } from '../components/WebSocketComponent'
-import { useAppDispatch, useAppSelector } from '../hooks/customHook'
+import { TYPE } from '../data/constants'
+import useUpdateEffect, { useAppDispatch, useAppSelector } from '../hooks/customHook'
 
 const Lobby = () => {
 
@@ -14,6 +15,7 @@ const Lobby = () => {
     const dispatch = useAppDispatch();
 
     const username = useAppSelector(selectUsername);
+    const players = useAppSelector(selectPlayers);
 
     const [chatMessages, setChatMessages] = useState([]);
 
@@ -23,6 +25,10 @@ const Lobby = () => {
         let value = ws.handleMessage(event);
         // setUserData({ ...userData, message: value })
     }
+
+    useUpdateEffect(() => {
+        ws.sendMessage(username, TYPE.LOBBY_INFO, players)
+    }, [players])
 
     return (
         <div className='lobby'>

@@ -12,11 +12,14 @@ const roomClients = {};
 
 wss.on("connection", socket => {
     let user;
+    let roomsJoined = [];
 
     const broadcastToRoom = (roomID, message) => {
-        Object.keys(roomClients[roomID]).forEach(client => {
-            roomClients[roomID][client].send(message)
-        })
+        if (roomClients[roomID]) {
+            Object.keys(roomClients[roomID]).forEach(client => {
+                roomClients[roomID][client].send(message)
+            })
+        }
     }
 
     const initializeGame = (roomID) => {
@@ -58,6 +61,7 @@ wss.on("connection", socket => {
 
                 roomData[roomID]['deck'] = deck;
                 roomData[roomID]['questionBank'] = questionList;
+                roomData[roomID]['players'] = [null, null, null, null];
             }
         }
         //add user to room
@@ -65,6 +69,7 @@ wss.on("connection", socket => {
 
             rooms[roomID][userID] = -1; // add player and playerNumber
             roomClients[roomID][userID] = socket; // add client to list
+            roomsJoined.push(roomID)
 
             if (roomID !== USER_LIST) {
                 sendPlayerData(roomID);
@@ -91,12 +96,12 @@ wss.on("connection", socket => {
         let message = isBinary ? data : data.toString();
 
         console.log('message received', message);
-        let { sender, type, payload } = JSON.parse(message);
+        let { sender, userID, roomID, type, payload } = JSON.parse(message);
 
         switch (type) {
             case TYPE.JOIN:
                 // user = payload;
-                console.log(type)
+                console.log('user joined')
                 break;
             case TYPE.LEAVE:
                 leave(payload, sender)
@@ -107,10 +112,11 @@ wss.on("connection", socket => {
             case TYPE.NEXT_QUESTION:
                 break;
             case TYPE.LOBBY_INFO:
+                roomData[roomID]['players'] = payload;
+                broadcastToRoom(roomID, JSON.stringify(roomData[roomID]['players']))
                 break;
             case TYPE.SUBSCRIBE:
                 subscribe(payload, sender) //room id, sender
-                sendPlayerData(payload) //room id
                 break;
             case TYPE.MESSAGE:
                 console.log('there was a message', payload);
@@ -124,9 +130,14 @@ wss.on("connection", socket => {
 
     socket.on("close", () => {
         // for each room, remove the closed socket
+
         Object.keys(rooms).forEach(room => leave(rooms, room, user));
         Object.keys(roomClients).forEach(room => leave(roomClients, room, user));
 
-        console.log('someone left', user);
+        console.log(user, ' left');
+
+        roomsJoined.forEach(room => {
+            sendPlayerData(room)
+        })
     });
 });

@@ -2,22 +2,15 @@ import { createContext, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/customHook";
 import { selectUsername, startGame, updatePlayersFromMessage } from "./gameStateSlice";
 import { v4 as uuidv4 } from 'uuid';
+import { TYPE } from "../data/constants";
 
 
 const WebSocketContext = createContext(null);
 
 export { WebSocketContext };
 
-const TYPE = {
-    JOIN: "join",
-    LEAVE: "leave",
-    MESSAGE: "message",
-    SUBSCRIBE: "subscribe",
-    LOBBY_INFO: "lobbyInfo",
-    GUESS: "guess",
-    NEXT_QUESTION: "nextQuestion",
-    INITIALIZE_GAME: "initializeGame",
-}
+
+
 
 const USER_LIST = 'userList';
 
@@ -26,7 +19,7 @@ let socket;
 const WebSocketComponent = ({ children }) => {
 
     const username = useAppSelector(selectUsername);
-    const subscription = useRef([]);
+    const subscription = useRef();
     const userID = useRef();
     const [playersInRoom, setPlayersInRoom] = useState([]);
 
@@ -46,12 +39,11 @@ const WebSocketComponent = ({ children }) => {
     }
 
     const onConnected = (roomID) => {
-        subscribe(USER_LIST);
         subscribe(roomID);
     }
 
     const subscribe = (roomID) => {
-        subscription.current.push(roomID)
+        subscription.current = roomID;
         sendMessage(username, TYPE.SUBSCRIBE, roomID)
     }
 
@@ -59,6 +51,7 @@ const WebSocketComponent = ({ children }) => {
         const message = {
             sender: sender,
             userID: userID.current,
+            roomID: subscription.current,
             type: type,
             payload: payload,
         }
