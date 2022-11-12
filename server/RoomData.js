@@ -3,14 +3,16 @@ import { shuffle } from "./helpers.js"
 
 export class RoomData {
     roomID;
+    host;
     players;
     playersInRoom;
     deck;
     questions;
     clients;
 
-    constructor(roomID) {
+    constructor(roomID, user) {
         this.roomID = roomID;
+        this.host = user;
         this.players = []
         this.playersInRoom = {};
         this.clients = {};
@@ -27,6 +29,14 @@ export class RoomData {
         delete this.playersInRoom[user]
         delete this.clients[user];
 
+        // change host if needed
+        if (this.host === user && Object.keys(this.clients).length !== 0) {
+            let newHost = Object.keys(this.clients)[0];
+            this.host = newHost;
+            console.log('new host is ', newHost)
+        }
+
+        //return if room should be deleted
         if (Object.keys(this.clients).length === 0) return true;
 
         return false;

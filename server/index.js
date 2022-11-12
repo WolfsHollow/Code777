@@ -17,7 +17,6 @@ wss.on("connection", socket => {
     const broadcastToRoom = (roomID, message, sender) => {
         if (rooms[roomID]) {
             Object.entries(rooms[roomID].clients).forEach(([userID, client]) => {
-
                 if (userID !== sender) {
                     client.send(message);
                 }
@@ -40,12 +39,11 @@ wss.on("connection", socket => {
     }
 
     const sendPlayerData = (roomID) => {
-        console.log('the player payload is ', rooms[roomID].players);
 
         let message = {
             sender: user,
             type: TYPE.LOBBY_INFO,
-            payload: rooms[roomID].playersInRoom,
+            payload: [rooms[roomID].playersInRoom, rooms[roomID].host],
         }
 
         broadcastToRoom(roomID, JSON.stringify(message));
@@ -56,7 +54,7 @@ wss.on("connection", socket => {
 
         // create room if doesn't exist
         if (!rooms[roomID]) {
-            rooms[roomID] = new RoomData(roomID);
+            rooms[roomID] = new RoomData(roomID, user);
         }
 
         //add user to room
@@ -87,9 +85,11 @@ wss.on("connection", socket => {
             case TYPE.NEXT_QUESTION:
                 break;
             case TYPE.LOBBY_INFO:
-                console.log(payload);
                 rooms[roomID].playersInRoom = payload;
-                broadcastToRoom(roomID, message, sender)
+                let newMessage = JSON.parse(message);
+                newMessage = { ...newMessage, payload: [payload, rooms[roomID].host] }
+                newMessage = JSON.stringify(newMessage);
+                broadcastToRoom(roomID, newMessage, sender)
                 break;
             case TYPE.SUBSCRIBE:
                 subscribe(payload, sender) //room id, sender
@@ -110,8 +110,8 @@ wss.on("connection", socket => {
 
         roomsJoined.forEach(room => {
             let isEmpty = rooms[room].remove(user);
-            sendPlayerData(room)
-            if (isEmpty) delete rooms[room]
+            sendPlayerData(room);
+            if (isEmpty) delete rooms[room];
         })
     });
 });

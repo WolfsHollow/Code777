@@ -31,6 +31,15 @@ const Lobby = () => {
         let value = ws.handleMessage(event);
     }
 
+    const handleStartGame = () => {
+        console.log('host', ws.host.current)
+        if (ws.host.current === username) {
+
+            // navigate('room/game');
+        }
+        else console.error('ONLY THE HOST CAN START THE GAME')
+    }
+
     return (
         <div className='lobby'>
             <div className='leftContainer'>
@@ -42,12 +51,12 @@ const Lobby = () => {
                 </div>
                 <div className='startGameContainer'>
                     <div style={{ backgroundColor: "lightblue", fontSize: '2rem', height: '100px', width: "350px" }}>{ws.roomJoined}</div>
-                    <Button text='Start Game' routesTo='room/game' />
+                    <Button text='Start Game' onClick={handleStartGame} />
                 </div>
             </div>
             <div className='rightContainer'>
                 <div className='playerList'>{playerDivs}</div>
-                <div className='chatBox'>
+                <div className='chatBox'>1
                 </div>
             </div>
         </div>

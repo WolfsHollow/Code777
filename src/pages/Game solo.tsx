@@ -62,7 +62,9 @@ const Game = () => {
     )
 
     const startGame = () => {
-        // dispatch(initializeGame())
+        dispatch(makeQuestionBankList())
+        dispatch(dealCards())
+        dispatch(getNewQuestion())
     }
 
 

@@ -18,6 +18,7 @@ const WebSocketComponent = ({ children }) => {
     const username = useAppSelector(selectUsername);
     const subscription = useRef();
     const userID = useRef();
+    const host = useRef();
     const [playersInRoom, setPlayersInRoom]: [Object, any] = useState([]);
     const [roomJoined, setRoomJoined]: [string, any] = useState('roomID');
     const players = useAppSelector(selectPlayers);
@@ -82,9 +83,11 @@ const WebSocketComponent = ({ children }) => {
     }
 
     const addListeners = (roomID) => {
-        socket.addEventListener('message', (message) => {
+        socket.addEventListener('message', (data, isBinary) => {
 
-            let { sender, userID, type, payload } = JSON.parse(message.data);
+            let message = isBinary ? data : data.toString();
+
+            let { sender, userID, type, payload } = JSON.parse(data.data);
 
             console.warn({ sender, userID, type, payload });
             switch (type) {
@@ -100,7 +103,9 @@ const WebSocketComponent = ({ children }) => {
                     break;
                 case TYPE.LOBBY_INFO: //payload is playersinRoom
                     console.log(payload);
-                    updatePlayerLists(payload)
+                    console.log(payload[0]);
+                    updatePlayerLists(payload[0]);
+                    host.current = payload[1];
                     break;
                 case TYPE.MESSAGE:
                     console.log('there was a message', payload);
@@ -110,7 +115,7 @@ const WebSocketComponent = ({ children }) => {
                     break;
 
                 default:
-                    console.log('problem with type');
+                    console.log('problem with type', type);
                     break;
             }
 
@@ -142,6 +147,7 @@ const WebSocketComponent = ({ children }) => {
         playersInRoom,
         setPlayersInRoom,
         roomJoined,
+        host
     }
 
     return (
