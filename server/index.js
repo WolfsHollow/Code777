@@ -7,19 +7,20 @@ import { RoomData } from './RoomData.js';
 const wss = new WebSocketServer({ port: 8082 });
 
 const rooms = {}; // {roomID: {player: playerNumber}}
-const roomData = {}; // {roomID: {deck:deck, questions: questions, players: [players]}}
+const roomData = {}; // {roomID: {deck:deck, questions: questions, players: [players], playersInRoom: {}}}
 const USER_LIST = 'userList';
 
 wss.on("connection", socket => {
     let user;
     let roomsJoined = [];
 
-    const broadcastToRoom = (roomID, message) => {
+    const broadcastToRoom = (roomID, message, sender) => {
         if (rooms[roomID]) {
             Object.entries(rooms[roomID].clients).forEach(([userID, client]) => {
-                // if (userID !== user) {
-                client.send(message)
-                // }
+
+                if (userID !== sender) {
+                    client.send(message);
+                }
             })
         }
     }
@@ -39,10 +40,12 @@ wss.on("connection", socket => {
     }
 
     const sendPlayerData = (roomID) => {
+        console.log('the player payload is ', rooms[roomID].players);
+
         let message = {
             sender: user,
             type: TYPE.LOBBY_INFO,
-            payload: rooms[roomID].players,
+            payload: rooms[roomID].playersInRoom,
         }
 
         broadcastToRoom(roomID, JSON.stringify(message));
@@ -50,6 +53,7 @@ wss.on("connection", socket => {
 
     const subscribe = (roomID, userID) => {
         user = userID;
+
         // create room if doesn't exist
         if (!rooms[roomID]) {
             rooms[roomID] = new RoomData(roomID);
@@ -83,8 +87,9 @@ wss.on("connection", socket => {
             case TYPE.NEXT_QUESTION:
                 break;
             case TYPE.LOBBY_INFO:
-                rooms[roomID].players = payload;
-                broadcastToRoom(roomID, message)
+                console.log(payload);
+                rooms[roomID].playersInRoom = payload;
+                broadcastToRoom(roomID, message, sender)
                 break;
             case TYPE.SUBSCRIBE:
                 subscribe(payload, sender) //room id, sender

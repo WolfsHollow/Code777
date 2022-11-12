@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import { selectPlayers, selectUsername } from '../components/gameStateSlice'
@@ -17,18 +17,19 @@ const Lobby = () => {
     const username = useAppSelector(selectUsername);
     const players = useAppSelector(selectPlayers);
 
-    const [chatMessages, setChatMessages] = useState([]);
+    // console.log('lobby - players in room ', ws.playersInRoom)
+    let playerList = Object.keys(ws.playersInRoom);
 
-    let playersList = ws.playersInRoom.map((user, index) => { return <div className='lobby-playerName' key={index} > {user}</div> })
+    let playerDivs: Array<React.ReactNode> = useMemo(() => {
+        let divs = playerList.map((user, index) => {
+            return <div className='lobby-playerName' key={user}>{user}</div>
+        })
+        return divs;
+    }, [playerList])
 
     const handleMessage = (event) => {
         let value = ws.handleMessage(event);
-        // setUserData({ ...userData, message: value })
     }
-
-    // useUpdateEffect(() => {
-    //     ws.sendMessage(username, TYPE.LOBBY_INFO, players)
-    // }, [players])
 
     return (
         <div className='lobby'>
@@ -40,13 +41,13 @@ const Lobby = () => {
                     <LobbyPlayerBox locationClass={''} playerNumber={2} />
                 </div>
                 <div className='startGameContainer'>
+                    <div style={{ backgroundColor: "lightblue", fontSize: '2rem', height: '100px', width: "350px" }}>{ws.roomJoined}</div>
                     <Button text='Start Game' routesTo='room/game' />
                 </div>
             </div>
             <div className='rightContainer'>
-                <div className='playerList'>{playersList}</div>
+                <div className='playerList'>{playerDivs}</div>
                 <div className='chatBox'>
-                    {/* {ws.publicChats.map((chat, index) => <div key={index}>{chat}</div>)} */}
                 </div>
             </div>
         </div>

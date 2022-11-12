@@ -1,6 +1,6 @@
 import { createContext, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../hooks/customHook";
-import { selectUsername, startGame, updatePlayersFromMessage } from "./gameStateSlice";
+import useUpdateEffect, { useAppDispatch, useAppSelector } from "../hooks/customHook";
+import { selectPlayers, selectUsername, startGame, updatePlayers, } from "./gameStateSlice";
 import { v4 as uuidv4 } from 'uuid';
 import { TYPE } from "../data/constants";
 
@@ -8,9 +8,6 @@ import { TYPE } from "../data/constants";
 const WebSocketContext = createContext(null);
 
 export { WebSocketContext };
-
-
-
 
 const USER_LIST = 'userList';
 
@@ -21,15 +18,18 @@ const WebSocketComponent = ({ children }) => {
     const username = useAppSelector(selectUsername);
     const subscription = useRef();
     const userID = useRef();
-    const [playersInRoom, setPlayersInRoom] = useState([]);
+    const [playersInRoom, setPlayersInRoom]: [Object, any] = useState([]);
+    const [roomJoined, setRoomJoined]: [string, any] = useState('roomID');
+    const players = useAppSelector(selectPlayers);
 
     const dispatch = useAppDispatch();
 
-    const connect = (roomID) => {
+    const connect = (roomID: string) => {
         try {
             userID.current = uuidv4(); // create here a uuid for this connection
             socket = new WebSocket('ws://localhost:8082');
             if (!roomID) roomID = userID.current;
+            setRoomJoined(roomID);
             addListeners(roomID);
         }
         catch (error) {
@@ -38,7 +38,7 @@ const WebSocketComponent = ({ children }) => {
         }
     }
 
-    const onConnected = (roomID) => {
+    const onConnected = (roomID: string) => {
         subscribe(roomID);
     }
 
@@ -51,26 +51,30 @@ const WebSocketComponent = ({ children }) => {
         const message = {
             sender: sender,
             userID: userID.current,
-            roomID: subscription.current,
+            roomID: roomID ? roomID : subscription.current,
             type: type,
             payload: payload,
         }
-        socket.send(JSON.stringify(message));
+        try {
+            socket.send(JSON.stringify(message));
+        }
+        catch (error) {
+            console.error('NOT CONNECTED TO SOCKET');
+        }
     }
 
-    const updatePlayerLists = (playersObject) => {
-        console.log(playersObject); //{player: playerNumber}
-        let playerList = [];
-        let playerOrder = ['', '', '', ''];
+    const updatePlayerLists = (playersObject: Object) => {
+        console.log(`ws - updatePlayerLists, playersInRoom - ${playersObject}`); //{player: playerNumber}
+        let newPlayers = ['', '', '', ''];
         Object.keys(playersObject).forEach((key, index) => {
             let value = playersObject[key];
-            playerList.push(key);
             if (value !== -1) {
-                playerOrder[value] = key;
+                newPlayers[value] = key;
             }
         })
-        setPlayersInRoom(playerList);
-        dispatch(updatePlayersFromMessage(playerOrder));
+        setPlayersInRoom(playersObject);
+        console.log('ws-updateplayerlists newplayers', newPlayers);
+        dispatch(updatePlayers(newPlayers));
     }
 
     const initializeGame = (payload) => {
@@ -94,8 +98,9 @@ const WebSocketComponent = ({ children }) => {
                 case TYPE.NEXT_QUESTION:
 
                     break;
-                case TYPE.LOBBY_INFO:
-                    updatePlayerLists(payload); // {playerID: playerNumber}
+                case TYPE.LOBBY_INFO: //payload is playersinRoom
+                    console.log(payload);
+                    updatePlayerLists(payload)
                     break;
                 case TYPE.MESSAGE:
                     console.log('there was a message', payload);
@@ -128,13 +133,15 @@ const WebSocketComponent = ({ children }) => {
         });
     }
 
+
     let ws = {
         socket,
         sendMessage,
         subscribe,
         connect,
         playersInRoom,
-
+        setPlayersInRoom,
+        roomJoined,
     }
 
     return (

@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { useContext } from 'react';
 import { DECK, PLAYER, QUESTION_BANK } from '../data/constants';
 import { getRandomNumber, shuffle } from '../utilities/helpers';
+import { WebSocketContext } from './WebSocketComponent';
 
 interface gameState {
     deck: [string, number][],
@@ -21,7 +23,7 @@ const initialState: gameState = {
     deck: DECK,
     playerTurn: 0,
     currentQuestion: 0,
-    players: [PLAYER.ONE, PLAYER.TWO, PLAYER.THREE, PLAYER.FOUR],
+    players: [null, null, null, null],
     username: 'Player One',
     userPlayerNumber: 0,
     numPlayers: 4,
@@ -139,9 +141,6 @@ export const gameStateSlice = createSlice({
         updateNumPlayers: (state, { payload }: PayloadAction<number>) => {
             state.numPlayers = payload;
         },
-        updatePlayersFromMessage: (state, { payload }: PayloadAction<string[]>) => {
-            state.players = payload;
-        },
         updatePlayerHands: (state, { payload }: PayloadAction<[Array<number>, Array<Array<string>>]>) => {
             // let player = payload[0];
             // let hand = payload[1];
@@ -154,15 +153,9 @@ export const gameStateSlice = createSlice({
             // state.playerHands = newHands;
             // console.log(`${player} -- hands updated`)
         },
-        updatePlayers: (state, { payload }: PayloadAction<[string, number]>) => {
-            let userIndex = state.players.indexOf(payload[0])
-            if (userIndex !== -1) {
-                state.players[userIndex] = null;
-            }
-            state.userPlayerNumber = payload[1];
-            state.players[payload[1]] = payload[0];
-            console.log(`current players ${payload}`);
-            console.log(`userPlayerNumber is now ${state.userPlayerNumber}`);
+        updatePlayers: (state, { payload }: PayloadAction<Array<string>>) => {
+            console.log(`updating players to ${payload}`)
+            state.players = payload;
         },
         updateUsername: (state, { payload }: PayloadAction<string>) => {
             // state.username = payload;
@@ -171,13 +164,13 @@ export const gameStateSlice = createSlice({
         },
         resetState: (state, action) => {
             return {// reset everything other than login info
-                ...state,
+                ...state, initialState,
             }
         }
     }
 });
 
-export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers, updatePlayersFromMessage,
+export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
     resetState, dealCards, getNewQuestion, startNextTurn, updateUsername, addGuessNumber, removeGuessNumber,
     madeIncorrectGuess, madeCorrectGuess, resetNumberCard, startGame,
 } = gameStateSlice.actions;
