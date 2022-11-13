@@ -7,6 +7,7 @@ import { WebSocketContext } from './WebSocketComponent';
 
 interface gameState {
     deck: [string, number][],
+    discardPile: [string, number][],
     playerTurn: number,
     currentQuestion: number,
     players: Array<string>,
@@ -17,11 +18,13 @@ interface gameState {
     guessNumbers: Array<[string, string | number]>,
     questionBank: Array<number>,
     playerScores: Array<number>,
+    isGameOver: boolean,
     test: string,
 }
 
 const initialState: gameState = {
     deck: DECK,
+    discardPile: [],
     playerTurn: 0,
     currentQuestion: 0,
     players: [null, null, null, null],
@@ -32,6 +35,7 @@ const initialState: gameState = {
     guessNumbers: [],
     questionBank: QUESTION_BANK,
     playerScores: [0, 0, 0, 0],
+    isGameOver: false,
     test: 'test',
 };
 
@@ -76,28 +80,18 @@ export const gameStateSlice = createSlice({
             console.log(`current question is Q${state.currentQuestion}`)
         },
         startGame: (state, { payload }: PayloadAction<Object>) => {
-            // payload:  deck, questionlist, players
-
-            let newDeck = payload['deck']
-            let newQuestionList = payload['questions'];
-            let newPlayers = payload['players'];
+            // payload:  deck, questionlist, hands, players
 
             // reset state to initial
             state.playerTurn = 0;
             state.playerScores = [0, 0, 0, 0];
 
-            // load questions, players, and numplayers
-            state.questionBank = newQuestionList;
-            state.players = newPlayers;
-            state.numPlayers = newPlayers.length;
-
-            //deal hands and deck
-            let newHands = state.playerHands;
-            for (let i = 0; i < state.players.length; i++) {
-                newHands[i] = newDeck.splice(0, 3);
-            }
-            state.playerHands = newHands;
-            state.deck = newDeck;
+            // load into state
+            state.questionBank = payload['questions'];
+            state.players = payload['players'];
+            state.numPlayers = payload['players'].length;
+            state.playerHands = payload['hands']
+            state.deck = payload['deck'];
         },
         startNextTurn: (state, { payload }: PayloadAction<number>) => {
 
@@ -122,7 +116,7 @@ export const gameStateSlice = createSlice({
             state.playerTurn = playerIndex;
             console.log(`current player: ${state.playerTurn}`)
         },
-        madeGuess: (state, { payload }: PayloadAction<boolean>) => {
+        madeGuess: (state, { payload }: PayloadAction<boolean>) => { //solo
 
             if (payload) {
                 console.log('the guess was correct!');
@@ -134,6 +128,19 @@ export const gameStateSlice = createSlice({
             let newHand = newDeck.splice(0, 3);
             state.playerHands[state.userPlayerNumber] = newHand;
             state.deck = newDeck;
+        },
+        receiveGuess: (state, { payload }: PayloadAction<Object>) => { //server
+            // payload: object {deck, hands, scores}
+            if (payload['isCorrect']) {
+                console.log('the guess was right!');
+            }
+            else console.log('the guess was wrong!');
+
+            state.deck = payload['deck'];
+            state.playerHands = payload['hands'];
+            state.playerScores = payload['scores'];
+            state.discardPile = payload['discard'];
+            state.isGameOver = payload['isGameOver'];
         },
         makeQuestionBankList: (state, { payload }: PayloadAction<Array<number>>) => {
             state.questionBank = shuffle(QUESTION_BANK);
@@ -185,7 +192,7 @@ export const gameStateSlice = createSlice({
 
 export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
     resetState, dealCards, getNewQuestion, startNextTurn, updateUsername, addGuessNumber, removeGuessNumber,
-    madeGuess, resetNumberCard, startGame, updateUserPlayerNumber,
+    madeGuess, resetNumberCard, startGame, updateUserPlayerNumber, receiveGuess,
 } = gameStateSlice.actions;
 
 export const selectDeck = (state) => state.gameState.deck;
@@ -199,6 +206,7 @@ export const selectUsername = (state) => state.gameState.username;
 export const selectUserPlayerNumber = (state) => state.gameState.userPlayerNumber;
 export const selectGuessNumbers = (state) => state.gameState.guessNumbers;
 export const selectPlayerScores = (state) => state.gameState.playerScores;
+export const selectIsGameOver = (state) => state.gameState.isGameOver;
 export const selectTest = (state) => state.gameState.test;
 
 export default gameStateSlice.reducer;

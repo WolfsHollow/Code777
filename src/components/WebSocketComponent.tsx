@@ -1,6 +1,6 @@
 import { createContext, useRef, useState } from "react";
 import useUpdateEffect, { useAppDispatch, useAppSelector } from "../hooks/customHook";
-import { selectPlayers, selectUsername, startGame, startNextTurn, updatePlayers, } from "./gameStateSlice";
+import { receiveGuess, selectPlayers, selectUsername, startGame, startNextTurn, updatePlayers, } from "./gameStateSlice";
 import { v4 as uuidv4 } from 'uuid';
 import { TYPE } from "../data/constants";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -88,12 +88,12 @@ const WebSocketComponent = ({ children }) => {
 
             console.warn({ sender, userID, type, payload });
             switch (type) {
-                case TYPE.INITIALIZE_GAME: // payload:  deck, questionlist, players
+                case TYPE.INITIALIZE_GAME: // payload:  deck, questionlist, hands, players
                     dispatch(startGame(payload));
                     navigate('room/game');
                     break;
                 case TYPE.GUESS:
-
+                    dispatch(receiveGuess(payload));
                     break;
                 case TYPE.NEXT_QUESTION:
                     dispatch(startNextTurn());
@@ -109,7 +109,6 @@ const WebSocketComponent = ({ children }) => {
                     console.log('problem with type', type);
                     break;
             }
-
         });
 
         socket.addEventListener('open', () => {

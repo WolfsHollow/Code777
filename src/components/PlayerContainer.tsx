@@ -31,8 +31,7 @@ const PlayerContainer = ({ playerName, cards, playerNumber }: props) => {
         <div className='playerContainer' style={{ backgroundColor: color, border: borderStyle }}>
             <div className='playerNameContainer' >
                 <div className='playerName'>{playerName}</div>
-                {/* <div className='score'>{playerScores[playerNumber]}</div> */}
-                <div className='score'>{playerNumber}</div>
+                <div className='score'>{playerScores[playerNumber]}</div>
             </div>
             <Card value={cards[0]} />
             <Card value={cards[1]} />

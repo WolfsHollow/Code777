@@ -24,27 +24,6 @@ wss.on("connection", socket => {
         }
     }
 
-    const initializeGame = (roomID) => {
-
-        let deck = rooms[roomID].deck;
-        let questionList = rooms[roomID].questions;
-        let players = rooms[roomID].players;
-
-        let payloadToSend = {
-            'deck': deck,
-            'questions': questionList,
-            'players': players,
-        };
-
-        let message = {
-            sender: user,
-            type: TYPE.INITIALIZE_GAME,
-            payload: payloadToSend,
-        }
-
-        broadcastToRoom(roomID, JSON.stringify(message));
-    }
-
     const sendPlayerData = (roomID) => {
 
         let message = {
@@ -87,14 +66,16 @@ wss.on("connection", socket => {
                 console.log('user joined')
                 break;
             case TYPE.GUESS:
-                broadcastToRoom(roomID, message);
+                newMessage = rooms[roomID].madeGuess(payload, JSON.parse(message));
+                broadcastToRoom(roomID, newMessage);
                 break;
             case TYPE.NEXT_QUESTION:
-                broadcastToRoom(roomID, message)
+                newMessage = rooms[roomID].nextQuestion(JSON.parse(message));
+                broadcastToRoom(roomID, newMessage)
                 break;
             case TYPE.INITIALIZE_GAME:
-                rooms[roomID].setPlayers();
-                initializeGame(roomID);
+                newMessage = rooms[roomID].startGame(JSON.parse(message))
+                broadcastToRoom(roomID, newMessage);
                 break;
             case TYPE.LOBBY_INFO:
                 rooms[roomID].playersInRoom = payload;

@@ -11,10 +11,11 @@ import {
     selectUserPlayerNumber,
     selectGuessNumbers,
     madeGuess,
-    selectUsername
+    selectUsername,
+    selectIsGameOver
 
 } from '../components/gameStateSlice'
-import { useAppDispatch, useAppSelector } from '../hooks/customHook'
+import useUpdateEffect, { useAppDispatch, useAppSelector } from '../hooks/customHook'
 import UserPlayerContainer from '../components/UserPlayerContainer'
 import Button from '../components/Button'
 import { WebSocketContext } from '../components/WebSocketComponent'
@@ -31,6 +32,7 @@ const Game = () => {
     const userPlayerNumber = useAppSelector(selectUserPlayerNumber);
     const guessNumbers = useAppSelector(selectGuessNumbers);
     const username = useAppSelector(selectUsername);
+    const isGameOver = useAppSelector(selectIsGameOver);
 
     const [reset, setReset] = useState(false);
     const [questionHistory, setQuestionHistory] = useState([]);
@@ -89,9 +91,16 @@ const Game = () => {
             // dispatch(madeGuess(isCorrect))
 
             //server
-            ws.sendMessage(username, TYPE.GUESS, isCorrect)
+            ws.sendMessage(username, TYPE.GUESS, [isCorrect, userPlayerNumber])
         }
     }
+
+
+    useUpdateEffect(() => {
+        if (isGameOver) {
+            console.log('GAME IS OVER!')
+        }
+    }, [isGameOver])
 
     return (
         <div className='gameplay'>
