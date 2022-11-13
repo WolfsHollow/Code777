@@ -12,10 +12,10 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Provider store={store}>
-    <WebSocketProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <WebSocketProvider>
         <App />
-      </BrowserRouter>
-    </WebSocketProvider>
+      </WebSocketProvider>
+    </BrowserRouter>
   </Provider>
 );

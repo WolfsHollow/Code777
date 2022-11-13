@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { TYPE } from '../data/constants'
 import useUpdateEffect, { useAppDispatch, useAppSelector } from '../hooks/customHook'
-import { selectPlayers, selectUsername, updatePlayers, } from './gameStateSlice'
+import { selectPlayers, selectUsername, updatePlayers, updateUserPlayerNumber, } from './gameStateSlice'
 import { WebSocketContext } from './WebSocketComponent'
 
 
@@ -19,7 +19,6 @@ const LobbyPlayerBox = ({ locationClass, playerNumber }: props) => {
     const players = useAppSelector(selectPlayers);
 
     const handleClick = () => {
-        console.log(players);
         if (players[playerNumber] === '') {
             let newPlayersInRoom = { ...ws.playersInRoom };
             let newPlayers = [...players];
@@ -30,8 +29,7 @@ const LobbyPlayerBox = ({ locationClass, playerNumber }: props) => {
             }
             newPlayersInRoom[username] = playerNumber;
             newPlayers[playerNumber] = username;
-            // console.log('lpbhandleclick newplayersinroom', newPlayersInRoom);
-
+            dispatch(updateUserPlayerNumber(playerNumber));
             dispatch(updatePlayers(newPlayers))
             ws.setPlayersInRoom(newPlayersInRoom);
             ws.sendMessage(username, TYPE.LOBBY_INFO, newPlayersInRoom);

@@ -32,10 +32,8 @@ const Lobby = () => {
     }
 
     const handleStartGame = () => {
-        console.log('host', ws.host.current)
         if (ws.host.current === username) {
-
-            // navigate('room/game');
+            ws.sendMessage(username, TYPE.INITIALIZE_GAME, 'START GAME')
         }
         else console.error('ONLY THE HOST CAN START THE GAME')
     }

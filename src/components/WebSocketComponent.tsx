@@ -1,8 +1,9 @@
 import { createContext, useRef, useState } from "react";
 import useUpdateEffect, { useAppDispatch, useAppSelector } from "../hooks/customHook";
-import { selectPlayers, selectUsername, startGame, updatePlayers, } from "./gameStateSlice";
+import { selectPlayers, selectUsername, startGame, startNextTurn, updatePlayers, } from "./gameStateSlice";
 import { v4 as uuidv4 } from 'uuid';
 import { TYPE } from "../data/constants";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 const WebSocketContext = createContext(null);
@@ -22,6 +23,8 @@ const WebSocketComponent = ({ children }) => {
     const [playersInRoom, setPlayersInRoom]: [Object, any] = useState([]);
     const [roomJoined, setRoomJoined]: [string, any] = useState('roomID');
     const players = useAppSelector(selectPlayers);
+
+    const navigate = useNavigate();
 
     const dispatch = useAppDispatch();
 
@@ -65,7 +68,6 @@ const WebSocketComponent = ({ children }) => {
     }
 
     const updatePlayerLists = (playersObject: Object) => {
-        console.log(`ws - updatePlayerLists, playersInRoom - ${playersObject}`); //{player: playerNumber}
         let newPlayers = ['', '', '', ''];
         Object.keys(playersObject).forEach((key, index) => {
             let value = playersObject[key];
@@ -74,12 +76,7 @@ const WebSocketComponent = ({ children }) => {
             }
         })
         setPlayersInRoom(playersObject);
-        console.log('ws-updateplayerlists newplayers', newPlayers);
         dispatch(updatePlayers(newPlayers));
-    }
-
-    const initializeGame = (payload) => {
-        dispatch(startGame(payload));
     }
 
     const addListeners = (roomID) => {
@@ -92,28 +89,22 @@ const WebSocketComponent = ({ children }) => {
             console.warn({ sender, userID, type, payload });
             switch (type) {
                 case TYPE.INITIALIZE_GAME: // payload:  deck, questionlist, players
-                    initializeGame(payload)
+                    dispatch(startGame(payload));
+                    navigate('room/game');
                     break;
                 case TYPE.GUESS:
 
                     break;
-
                 case TYPE.NEXT_QUESTION:
-
+                    dispatch(startNextTurn());
                     break;
-                case TYPE.LOBBY_INFO: //payload is playersinRoom
-                    console.log(payload);
-                    console.log(payload[0]);
+                case TYPE.LOBBY_INFO: //payload is playersinRoom   
                     updatePlayerLists(payload[0]);
                     host.current = payload[1];
                     break;
                 case TYPE.MESSAGE:
                     console.log('there was a message', payload);
                     break;
-                case 'broadcast':
-                    console.log(sender, payload);
-                    break;
-
                 default:
                     console.log('problem with type', type);
                     break;

@@ -26,15 +26,22 @@ wss.on("connection", socket => {
 
     const initializeGame = (roomID) => {
 
-        let deck = roomData[roomID].deck;
-        let questionList = roomData[roomID].questions;
+        let deck = rooms[roomID].deck;
+        let questionList = rooms[roomID].questions;
         let players = rooms[roomID].players;
+
+        let payloadToSend = {
+            'deck': deck,
+            'questions': questionList,
+            'players': players,
+        };
 
         let message = {
             sender: user,
             type: TYPE.INITIALIZE_GAME,
-            payload: { deck, questionList, players },
+            payload: payloadToSend,
         }
+
         broadcastToRoom(roomID, JSON.stringify(message));
     }
 
@@ -73,20 +80,25 @@ wss.on("connection", socket => {
 
         console.log('message received', message);
         let { sender, userID, roomID, type, payload } = JSON.parse(message);
-
+        let newMessage;
         switch (type) {
             case TYPE.JOIN:
                 // user = payload;
                 console.log('user joined')
                 break;
             case TYPE.GUESS:
-
+                broadcastToRoom(roomID, message);
                 break;
             case TYPE.NEXT_QUESTION:
+                broadcastToRoom(roomID, message)
+                break;
+            case TYPE.INITIALIZE_GAME:
+                rooms[roomID].setPlayers();
+                initializeGame(roomID);
                 break;
             case TYPE.LOBBY_INFO:
                 rooms[roomID].playersInRoom = payload;
-                let newMessage = JSON.parse(message);
+                newMessage = JSON.parse(message);
                 newMessage = { ...newMessage, payload: [payload, rooms[roomID].host] }
                 newMessage = JSON.stringify(newMessage);
                 broadcastToRoom(roomID, newMessage, sender)

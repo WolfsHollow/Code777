@@ -18,8 +18,7 @@ import {
     selectUserPlayerNumber,
     selectUsername,
     selectGuessNumbers,
-    madeCorrectGuess,
-    madeIncorrectGuess
+    madeGuess,
 
 } from '../components/gameStateSlice'
 import { useAppDispatch, useAppSelector } from '../hooks/customHook'
@@ -90,9 +89,9 @@ const Game = () => {
                 return index
             })
             if (guessNumbersOnly.length === 3) {
-                dispatch(madeCorrectGuess())
+                dispatch(madeGuess())
             }
-            else dispatch(madeIncorrectGuess())
+            else dispatch(madeGuess())
         }
     }
 

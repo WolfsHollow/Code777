@@ -1,10 +1,12 @@
-import React, { useRef } from 'react'
+import React, { useContext, useRef } from 'react'
+import { TYPE } from '../data/constants'
 import { useAppDispatch, useAppSelector } from '../hooks/customHook'
 import { getQuestionAnswer } from '../utilities/getQuestionAnswer'
 import { getRandomNumber } from '../utilities/helpers'
 import Button from './Button'
-import { getNewQuestion, selectNumPlayers, selectPlayerHands, selectPlayers, selectPlayerTurn, startNextTurn } from './gameStateSlice'
+import { getNewQuestion, selectNumPlayers, selectPlayerHands, selectPlayers, selectPlayerTurn, selectUsername, selectUserPlayerNumber, startNextTurn } from './gameStateSlice'
 import { questionList } from './questionList'
+import { WebSocketContext } from './WebSocketComponent'
 
 type props = {
     question: number,
@@ -13,23 +15,36 @@ type props = {
 const Question = ({ question }: props) => {
 
     const dispatch = useAppDispatch();
+    const ws = useContext(WebSocketContext);
 
     const playerHands = useAppSelector(selectPlayerHands);
     const playerTurn = useAppSelector(selectPlayerTurn);
     const numPlayers = useAppSelector(selectNumPlayers);
+    const userPlayerNumber = useAppSelector(selectUserPlayerNumber);
+    const username = useAppSelector(selectUsername);
 
     let answer = getQuestionAnswer(question, numPlayers, playerHands, playerTurn);
 
-
+    //for solo play
     const newQuestion = () => {
         dispatch(startNextTurn());
+    }
+
+    //for server play
+    const handleNewQuestion = () => {
+        let nextPlayer = playerTurn + 1 > numPlayers - 1 ? 0 : playerTurn + 1;
+        console.log('question - the next player is ', nextPlayer, 'current ', playerTurn)
+        if (nextPlayer === userPlayerNumber) {
+            ws.sendMessage(username, TYPE.NEXT_QUESTION, 'NEXT QUESTION')
+        }
+        else console.error('YOU ARE NOT THE NEXT PLAYER')
     }
 
     return (
         <div className='questionBox'>
             <p>{questionList[question]}</p>
             <p>{answer}</p>
-            <Button text='Next Question' onClick={newQuestion} />
+            <Button text='Next Question' onClick={handleNewQuestion} />
         </div>
     )
 }

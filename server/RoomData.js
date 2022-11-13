@@ -43,5 +43,11 @@ export class RoomData {
 
     }
 
+    setPlayers() {
+        Object.entries(this.playersInRoom).forEach(([user, index]) =>
+            this.players[index] = user
+        )
+    }
+
 
 }
