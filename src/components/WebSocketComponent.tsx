@@ -30,7 +30,7 @@ const WebSocketComponent = ({ children }) => {
 
     const connect = (roomID: string) => {
         try {
-            userID.current = uuidv4(); // create here a uuid for this connection
+            userID.current = uuidv4().toUpperCase(); // create here a uuid for this connection
             socket = new WebSocket('ws://localhost:8082');
             if (!roomID) roomID = userID.current;
             setRoomJoined(roomID);

@@ -17,20 +17,17 @@ const Button = ({ text, routesTo, onClick, routeAndClick, className, buttonStyle
     const navigate = useNavigate();
 
     const handleClick = () => {
-
-        if (routesTo === 'homepage') { // need to change url to '/'
-            routesTo = '';
-        }
-
         if (routeAndClick) {
             onClick();
             navigate(`/${routesTo}`);
         }
         else {
             if (routesTo) {
+                if (routesTo === 'homepage') routesTo = '';
                 navigate(`/${routesTo}`);
             }
             else {
+                console.log(routesTo)
                 onClick()
             }
         }

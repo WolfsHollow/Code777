@@ -9,7 +9,7 @@ import { updateUsername } from '../components/gameStateSlice'
 const Homepage = () => {
 
     const welcome = `Welcome to Code 777\n
-    To Continue, please choose a nickname.\n`
+    To continue, please choose a nickname.\n`
 
     const instructions = `
     1. Click on the CREATE ROOM button.\n
@@ -28,17 +28,16 @@ const Homepage = () => {
     }
 
     return (
-        <div className="homepage changeAnimation">
+        <div className="homepage">
             <div className='createRoomForm'>
-                <span className='createRoomInstructions'>{welcome}</span>
-                <br />
+                <span className='startInstructions'>{welcome}</span>
                 <input type="text" id="username" className="userNameInput" name="username" ref={username} />
                 <Button text='Confirm' buttonStyle={{ alignSelf: 'center' }} onClick={handleUsernameSubmit} routeAndClick={true} routesTo='room/create' />
             </div>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
+            {/* <div className='createRoomInstructions' style={{ whiteSpace: 'pre-wrap' }}>
                 <hr />
                 {instructions}
-            </div>
+            </div> */}
         </div>
     )
 }

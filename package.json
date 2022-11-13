@@ -27,6 +27,10 @@
       "react-app/jest"
     ]
   },
+  "include": [
+    "src",
+    "index.d.ts"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",

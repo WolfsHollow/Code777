@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { TYPE } from '../data/constants'
 import useUpdateEffect, { useAppDispatch, useAppSelector } from '../hooks/customHook'
 import { selectPlayers, selectUsername, updatePlayers, updateUserPlayerNumber, } from './gameStateSlice'
 import { WebSocketContext } from './WebSocketComponent'
-
+import redLock from '../assets/images/redLockIcon.png'
+import greenLock from '../assets/images/greenLockIconUnlock.png'
 
 type props = {
     locationClass?: string,
@@ -17,9 +18,12 @@ const LobbyPlayerBox = ({ locationClass, playerNumber }: props) => {
     const dispatch = useAppDispatch();
     const username = useAppSelector(selectUsername);
     const players = useAppSelector(selectPlayers);
+    const lockIcon = useRef(redLock);
+
+    const [text, setText] = useState('UNLOCK');
 
     const handleClick = () => {
-        if (players[playerNumber] === '') {
+        if (text === 'UNLOCK') {
             let newPlayersInRoom = { ...ws.playersInRoom };
             let newPlayers = [...players];
             let index = newPlayersInRoom[username];
@@ -29,6 +33,8 @@ const LobbyPlayerBox = ({ locationClass, playerNumber }: props) => {
             }
             newPlayersInRoom[username] = playerNumber;
             newPlayers[playerNumber] = username;
+            setText(username);
+            lockIcon.current = greenLock;
             dispatch(updateUserPlayerNumber(playerNumber));
             dispatch(updatePlayers(newPlayers))
             ws.setPlayersInRoom(newPlayersInRoom);
@@ -37,13 +43,25 @@ const LobbyPlayerBox = ({ locationClass, playerNumber }: props) => {
         else console.log('SPOT ALREADY TAKEN!')
     }
 
+    useUpdateEffect(() => {
+        if (players[playerNumber] === '') {
+            setText('UNLOCK');
+            lockIcon.current = redLock;
+        }
+        else {
+            setText(players[playerNumber]);
+            lockIcon.current = greenLock;
+        }
+    }, [players[playerNumber]])
 
     return (
         <div className={`playerBoxContainer ${locationClass}`}>
-            <div className='playerBox' onClick={handleClick}>
-                {players[playerNumber]}
-            </div>
-        </div>
+            <button className='playerBox'
+                style={{ backgroundImage: `url(${lockIcon.current})` }}
+                onClick={handleClick} >
+                {text}
+            </button>
+        </div >
     )
 }
 

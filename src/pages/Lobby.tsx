@@ -42,13 +42,13 @@ const Lobby = () => {
         <div className='lobby'>
             <div className='leftContainer'>
                 <div className='playerSelectorContainer'>
-                    <LobbyPlayerBox locationClass={'evenPlayer'} playerNumber={1} />
-                    <LobbyPlayerBox locationClass={'evenPlayer'} playerNumber={3} />
-                    <LobbyPlayerBox locationClass={''} playerNumber={0} />
-                    <LobbyPlayerBox locationClass={''} playerNumber={2} />
+                    <LobbyPlayerBox locationClass={'player-one oddPlayer'} playerNumber={0} />
+                    <LobbyPlayerBox locationClass={'player-three oddPlayer'} playerNumber={2} />
+                    <LobbyPlayerBox locationClass={'player-two evenPlayer'} playerNumber={1} />
+                    <LobbyPlayerBox locationClass={'player-four evenPlayer'} playerNumber={3} />
                 </div>
                 <div className='startGameContainer'>
-                    <div style={{ backgroundColor: "lightblue", fontSize: '2rem', height: '100px', width: "350px" }}>{ws.roomJoined}</div>
+                    <div className='lobby-roomID' >{ws.roomJoined}</div>
                     <Button text='Start Game' onClick={handleStartGame} />
                 </div>
             </div>

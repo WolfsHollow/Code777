@@ -31,19 +31,25 @@ const CreateRoom = () => {
         ws.connect(roomID.current.value);
     }
 
+    const handleBackButton = () => {
+        setIsJoiningGame(false);
+    }
+
     return (
         <div id="createRoomPage">
-            <div className='createRoomForm'>
+            <div className='createRoomForm' style={{ gap: '10px' }}>
                 {isJoiningGame ?
                     <>
-                        <div className="createRoomInstructions">Please enter a room name</div>
+                        <div className="startInstructions" >Please enter a room ID</div>
                         <input type="text" id="roomID" className="roomInput" name="roomID" ref={roomID} />
                         <Button text='Join' buttonStyle={{ alignSelf: 'center' }} onClick={handleJoinRoom} routeAndClick={true} routesTo='room' />
+                        <Button text='Back' buttonStyle={{ alignSelf: 'center' }} onClick={handleBackButton} />
                     </>
                     :
                     <>
                         <Button text='Create Room' buttonStyle={{ alignSelf: 'center' }} onClick={handleCreateRoom} routeAndClick={true} routesTo='room' />
                         <Button text='Join a Room' buttonStyle={{ alignSelf: 'center' }} onClick={handleJoinClick} />
+                        <Button text='Back' buttonStyle={{ alignSelf: 'center' }} routesTo='homepage' />
                     </>
                 }
             </div>
