@@ -11,7 +11,7 @@ type props = {
 
 const PlayerContainer = ({ playerName, cards, playerNumber }: props) => {
     const playerScores = useAppSelector(selectPlayerScores);
-    const [color, setColor] = useState('white');
+    const [color, setColor] = useState('');
     const [borderStyle, setBorderStyle] = useState('1px solid black')
 
     const playerTurn = useAppSelector(selectPlayerTurn);
@@ -22,7 +22,7 @@ const PlayerContainer = ({ playerName, cards, playerNumber }: props) => {
             setBorderStyle('5px solid blue');
         }
         else if (playerTurn !== playerNumber && color === 'red') {
-            setColor('white')
+            setColor('')
             setBorderStyle('1px solid black')
         }
     }, [playerTurn])

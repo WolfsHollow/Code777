@@ -12,7 +12,8 @@ import {
     selectGuessNumbers,
     madeGuess,
     selectUsername,
-    selectIsGameOver
+    selectIsGameOver,
+    selectQuestionHistory
 
 } from '../components/gameStateSlice'
 import useUpdateEffect, { useAppDispatch, useAppSelector } from '../hooks/customHook'
@@ -33,9 +34,10 @@ const Game = () => {
     const guessNumbers = useAppSelector(selectGuessNumbers);
     const username = useAppSelector(selectUsername);
     const isGameOver = useAppSelector(selectIsGameOver);
-
+    const questionHistory = useAppSelector(selectQuestionHistory);
     const [reset, setReset] = useState(false);
-    const [questionHistory, setQuestionHistory] = useState([]);
+
+    const tableEndRef = useRef(null);
 
     const getOpponentArray = () => {
         let opponentPlayers = [0, 1, 2, 3];
@@ -48,7 +50,6 @@ const Game = () => {
     }
 
     const playerArray = useRef(initialState);
-
 
     const numberDivs = NUMBERS.map((entry: [string, number, string], index: number) =>
         <Number color={entry[0]} value={entry[1]} grid={entry[2]} key={index} reset={reset} />
@@ -96,11 +97,22 @@ const Game = () => {
     }
 
 
+    const scrollToBottom = () => {
+        tableEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+
     useUpdateEffect(() => {
         if (isGameOver) {
             console.log('GAME IS OVER!')
         }
     }, [isGameOver])
+
+
+
+    useUpdateEffect(() => {
+        scrollToBottom();
+    }, [questionHistory])
 
     return (
         <div className='gameplay'>
@@ -109,19 +121,32 @@ const Game = () => {
                 {playerContainerList}
             </div>
             <div className='chat'>
-                <span>
-                    Current Player Turn {playerTurn}
-                </span>
-                <br />
-                <span>
-                    players {players}
-
-                </span>
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Asker</th>
+                    </tr>
+                    {questionHistory.map((val, key) => {
+                        let color = ''
+                        if (key % 2 === 0) {
+                            color = 'royalblue'
+                        }
+                        return (
+                            <tr style={{ backgroundColor: color }} key={key}>
+                                <td>{val[0]}</td>
+                                <td className='td-question'>{val[1]}</td>
+                                <td>{val[2]}</td>
+                                <td>{val[3]}</td>
+                            </tr>
+                        )
+                    })}
+                </table>
+                <div ref={tableEndRef}></div>
             </div>
             <div className='numberNoteCardContainer'>
-                <div className='editButtons'>
-                    <UserPlayerContainer />
-                </div>
+                <UserPlayerContainer />
                 <div className='numberNoteCard'>
                     <Button text='Reset' onClick={handleReset} buttonStyle={{ gridArea: "3/2/3/4" }} />
                     <Button text='Submit' onClick={submitGuess} buttonStyle={{ gridArea: "3/12/3/14" }} />

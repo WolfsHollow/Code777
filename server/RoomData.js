@@ -1,4 +1,5 @@
 import { DECK, QUESTION_BANK, TYPE } from "./constants.js"
+import { getQuestionAnswer } from "./getQuestionAnswer.js";
 import { shuffle } from "./helpers.js"
 
 export class RoomData {
@@ -12,6 +13,8 @@ export class RoomData {
     scores;
     hands;
     discardPile;
+    currentQuestion;
+    questionAnswer;
 
     constructor(roomID, user) {
         this.roomID = roomID;
@@ -53,13 +56,12 @@ export class RoomData {
         if (this.questions.length === 0) {
             this.questions = shuffle(QUESTION_BANK);
         }
-        let newQuestionList = [this.questions];
+        let newQuestionList = [...this.questions];
         let nextQuestion = newQuestionList.shift();
 
         this.questions = newQuestionList;
 
         let newMessage = { ...message, payload: nextQuestion }
-
         return JSON.stringify(newMessage);
     }
 
@@ -107,9 +109,14 @@ export class RoomData {
             this.players[index] = user
         )
 
-        let newDeck = this.deck;
-        let newQuestionList = this.questions;
-        let newHands = this.hands;
+        let newDeck = [...this.deck];
+        let newQuestionList = [...this.questions];
+        let newHands = [...this.hands];
+
+        let newCurrentQuestion = newQuestionList.shift();
+        let newAnswer = getQuestionAnswer(newCurrentQuestion, this.players.length, this.hands, 0);
+
+        this.questions = newQuestionList;
 
         for (let i = 0; i < this.players.length; i++) {
             newHands[i] = newDeck.splice(0, 3);
@@ -117,6 +124,8 @@ export class RoomData {
 
         let payloadToSend = {
             'deck': newDeck,
+            'currentQuestion': newCurrentQuestion,
+            'questionAnswer': newAnswer,
             'questions': newQuestionList,
             'hands': newHands,
             'players': this.players,

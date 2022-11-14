@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { useContext } from 'react';
 import { DECK, PLAYER, QUESTION_BANK } from '../data/constants';
+import { getQuestionAnswer } from '../utilities/getQuestionAnswer';
 import { getRandomNumber, shuffle } from '../utilities/helpers';
-import { questionList } from './questionList';
+import { questionList, shortQuestionList } from './questionList';
 import { WebSocketContext } from './WebSocketComponent';
 
 interface gameState {
@@ -14,9 +15,11 @@ interface gameState {
     username: string,
     userPlayerNumber: number,
     numPlayers: number,
-    playerHands: Array<Array<[string, string | number]>>,
+    playerHands: Array<Array<[string, '?' | number]>>,
     guessNumbers: Array<[string, string | number]>,
     questionBank: Array<number>,
+    questionHistory: Array<[string, string, string | number, string]>,
+    questionAnswer: number | string;
     playerScores: Array<number>,
     isGameOver: boolean,
     test: string,
@@ -34,6 +37,8 @@ const initialState: gameState = {
     playerHands: [[['?', '?'], ['?', '?'], ['?', '?']], [['?', '?'], ['?', '?'], ['?', '?']], [['?', '?'], ['?', '?'], ['?', '?']], [['?', '?'], ['?', '?'], ['?', '?']]],
     guessNumbers: [],
     questionBank: QUESTION_BANK,
+    questionHistory: [],
+    questionAnswer: null,
     playerScores: [0, 0, 0, 0],
     isGameOver: false,
     test: 'test',
@@ -85,9 +90,12 @@ export const gameStateSlice = createSlice({
             // reset state to initial
             state.playerTurn = 0;
             state.playerScores = [0, 0, 0, 0];
+            state.questionHistory = [];
 
             // load into state
             state.questionBank = payload['questions'];
+            state.currentQuestion = payload['currentQuestion'];
+            state.questionAnswer = payload['questionAnswer'];
             state.players = payload['players'];
             state.numPlayers = payload['players'].length;
             state.playerHands = payload['hands']
@@ -97,15 +105,19 @@ export const gameStateSlice = createSlice({
 
             // get next question
             //solo
-            if (state.questionBank.length === 0) {
-                state.questionBank = shuffle(QUESTION_BANK);
-            }
-            let newQuestionList = [...state.questionBank];
-            let nextQuestion = newQuestionList.shift();
+            // if (state.questionBank.length === 0) {
+            //     state.questionBank = shuffle(QUESTION_BANK);
+            // }
+            // let newQuestionList = [...state.questionBank];
+            // let nextQuestion = newQuestionList.shift();
+            // state.currentQuestion = nextQuestion;
+            // state.questionBank = newQuestionList;
 
-            state.currentQuestion = nextQuestion;
-            state.questionBank = newQuestionList;
-            console.log(`current question is Q${state.currentQuestion}`)
+            state.questionHistory.push([`Q${state.currentQuestion}`, shortQuestionList[state.currentQuestion], state.questionAnswer, state.players[state.playerTurn]])
+
+            state.currentQuestion = payload;
+
+            console.log(`current question is Q${state.currentQuestion}, answer is ${state.questionAnswer}`)
 
             // change player
             let playerIndex = state.playerTurn;
@@ -114,6 +126,8 @@ export const gameStateSlice = createSlice({
                 playerIndex = 0;
             }
             state.playerTurn = playerIndex;
+            let newAnswer = getQuestionAnswer(payload, state.numPlayers, state.playerHands, state.playerTurn);
+            state.questionAnswer = newAnswer;
             console.log(`current player: ${state.playerTurn}`)
         },
         madeGuess: (state, { payload }: PayloadAction<boolean>) => { //solo
@@ -173,6 +187,9 @@ export const gameStateSlice = createSlice({
             // state.playerHands = newHands;
             // console.log(`${player} -- hands updated`)
         },
+        updateQuestionHistory: (state, { payload }: PayloadAction<[string, string, string | number, string]>) => {
+            state.questionHistory.push(payload);
+        },
         updatePlayers: (state, { payload }: PayloadAction<Array<string>>) => {
             console.log(`updating players to ${payload}`)
             state.players = payload;
@@ -192,7 +209,7 @@ export const gameStateSlice = createSlice({
 
 export const { changePlayer, makeQuestionBankList, updatePlayerHands, updatePlayers,
     resetState, dealCards, getNewQuestion, startNextTurn, updateUsername, addGuessNumber, removeGuessNumber,
-    madeGuess, resetNumberCard, startGame, updateUserPlayerNumber, receiveGuess,
+    madeGuess, resetNumberCard, startGame, updateUserPlayerNumber, receiveGuess, updateQuestionHistory
 } = gameStateSlice.actions;
 
 export const selectDeck = (state) => state.gameState.deck;
@@ -208,5 +225,7 @@ export const selectGuessNumbers = (state) => state.gameState.guessNumbers;
 export const selectPlayerScores = (state) => state.gameState.playerScores;
 export const selectIsGameOver = (state) => state.gameState.isGameOver;
 export const selectTest = (state) => state.gameState.test;
+export const selectQuestionHistory = (state) => state.gameState.questionHistory;
+export const selectQuestionAnswer = (state) => state.gameState.questionAnswer;
 
 export default gameStateSlice.reducer;

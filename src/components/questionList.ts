@@ -23,3 +23,30 @@ export const questionList = {
     21: "Do you see more black or more brown numbers? ",
     22: "Do you see more black or more red numbers?",
 }
+
+export const shortQuestionList = {
+    0: 'More Green or Yellow?',
+    1: "# Racks w/ Sum >= 18?",
+    2: "# Racks w/ Sum >= 12?",
+    3: "# Racks w/ Same number, different color?",
+    4: "# Racks w/ 3 different colors?",
+    5: "# Racks w/ only even or odd?",
+    6: "# Racks w/ at least 2 cards that are the same?",
+    7: "# Racks w/ consecutive numbers?",
+    8: "# Colors visible?",
+    9: "# Colors visible at least 3 times?",
+    10: "# Numbers not visible?",
+    11: "# of: Green 1, Black 5, Pink 7?",
+    12: "More 3s or Pink 6s?",
+    13: "More Green 6s or Yellow 7s?",
+    14: "More Yellow 2s or Yellow 7s?",
+    15: "More Pink 6s or Green 6s?",
+    16: "More Blue 7s or Non-Blue 7s?",
+    17: "More Brown or Blue?",
+    18: "More Red or Pink?",
+    19: "More Green or Blue?",
+    20: "More Yellow or Pink?",
+    21: "More Black or Brown?",
+    22: "More Black or Red?",
+
+}

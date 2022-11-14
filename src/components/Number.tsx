@@ -77,6 +77,8 @@ const Number = ({ color, value, grid, reset }: props) => {
 
     return (
         <div onClick={onClick} style={{ gridArea: grid, backgroundColor: backgroundColor }} className={`number ${color}`}>
+            {/* <div onClick={onClick} style={{ gridArea: grid, backgroundColor: backgroundColor }} className={`b-game-card`}> */}
+
             {value}
         </div >
     )

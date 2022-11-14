@@ -1,10 +1,9 @@
-import { COLORS } from "../data/constants";
+import { COLORS } from "./constants.js";
 
-export const getQuestionAnswer = (question: number, numPlayers: number, playerHands: Array<Array<[string, '?' | number]>>, currentPlayer: number) => {
-    console.error({
+export const getQuestionAnswer = (question, numPlayers, playerHands, currentPlayer) => {
+    console.log({
         question,
         numPlayers,
-        playerHands,
         currentPlayer
     })
 
@@ -332,7 +331,7 @@ export const getQuestionAnswer = (question: number, numPlayers: number, playerHa
     }
 }
 
-const getVisibleCards = (numPlayers: number, playerHands: Array<Array<[string, '?' | number]>>, currentPlayer: number) => {
+const getVisibleCards = (numPlayers, playerHands, currentPlayer) => {
     let players = [0, 1, 2, 3];
     let visibleCards = [];
     let visibleHands = [];
@@ -343,10 +342,11 @@ const getVisibleCards = (numPlayers: number, playerHands: Array<Array<[string, '
         visibleCards = [...visibleCards, playerHands[player]]
         visibleHands = [...visibleHands, ...playerHands[player]]
     })
+
     return [visibleCards, visibleHands]
 }
 
-const getCardCount = (count: Array<number>, card: [string, number], value: number | string, value2?: number | string, value3?: number | string) => {
+const getCardCount = (count, card, value, value2, value3) => {
     if (card[0] === value) {
         count[0] += 1;
     }
@@ -363,7 +363,7 @@ const getCardCount = (count: Array<number>, card: [string, number], value: numbe
     return count
 }
 
-const getHighestCount = (options: Array<string>, count: Array<number>) => {
+const getHighestCount = (options, count) => {
     let count0 = count[0];
     let count1 = count[1];
 

@@ -1,6 +1,6 @@
 import { createContext, useRef, useState } from "react";
 import useUpdateEffect, { useAppDispatch, useAppSelector } from "../hooks/customHook";
-import { receiveGuess, selectPlayers, selectUsername, startGame, startNextTurn, updatePlayers, } from "./gameStateSlice";
+import { receiveGuess, selectPlayers, selectUsername, startGame, startNextTurn, updatePlayers, updateQuestionHistory, } from "./gameStateSlice";
 import { v4 as uuidv4 } from 'uuid';
 import { TYPE } from "../data/constants";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ const WebSocketComponent = ({ children }) => {
                     dispatch(receiveGuess(payload));
                     break;
                 case TYPE.NEXT_QUESTION:
-                    dispatch(startNextTurn());
+                    dispatch(startNextTurn(payload));
                     break;
                 case TYPE.LOBBY_INFO: //payload is playersinRoom   
                     updatePlayerLists(payload[0]);

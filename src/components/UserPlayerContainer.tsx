@@ -30,10 +30,10 @@ const UserPlayerContainer = () => {
     }, [guessNumbers])
 
     return (
-        <div className='playerContainer' style={{ backgroundColor: color }}>
+        <div className='userPlayerContainer' style={{ backgroundColor: color }}>
             <div className='playerNameContainer'>
-                <div className='playerName'>{username}</div>
-                <div className='score'>{playerScores[userPlayerNumber]}</div>
+                <div className='userPlayerName'>{username}</div>
+                <div className='userScore'>{playerScores[userPlayerNumber]}</div>
             </div>
             <Card value={cards[0]} />
             <Card value={cards[1]} />

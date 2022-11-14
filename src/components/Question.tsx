@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/customHook'
 import { getQuestionAnswer } from '../utilities/getQuestionAnswer'
 import { getRandomNumber } from '../utilities/helpers'
 import Button from './Button'
-import { getNewQuestion, selectNumPlayers, selectPlayerHands, selectPlayers, selectPlayerTurn, selectUsername, selectUserPlayerNumber, startNextTurn } from './gameStateSlice'
+import { getNewQuestion, selectNumPlayers, selectPlayerHands, selectPlayers, selectPlayerTurn, selectQuestionAnswer, selectQuestionBank, selectUsername, selectUserPlayerNumber, startNextTurn, updateQuestionHistory } from './gameStateSlice'
 import { questionList } from './questionList'
 import { WebSocketContext } from './WebSocketComponent'
 
@@ -22,8 +22,10 @@ const Question = ({ question }: props) => {
     const numPlayers = useAppSelector(selectNumPlayers);
     const userPlayerNumber = useAppSelector(selectUserPlayerNumber);
     const username = useAppSelector(selectUsername);
+    const players = useAppSelector(selectPlayers);
+    const answer = useAppSelector(selectQuestionAnswer)
 
-    let answer = getQuestionAnswer(question, numPlayers, playerHands, playerTurn);
+    // let answer = getQuestionAnswer(question, numPlayers, playerHands, playerTurn);
 
     //for solo play
     const newQuestion = () => {
@@ -35,10 +37,13 @@ const Question = ({ question }: props) => {
         let nextPlayer = playerTurn + 1 > numPlayers - 1 ? 0 : playerTurn + 1;
         console.log('question - the next player is ', nextPlayer, 'current ', playerTurn)
         if (nextPlayer === userPlayerNumber) {
+            // dispatch(updateQuestionHistory([`Q${question}`, answer, players[playerTurn]]))
             ws.sendMessage(username, TYPE.NEXT_QUESTION, 'NEXT QUESTION')
         }
         else console.error('YOU ARE NOT THE NEXT PLAYER')
     }
+
+
 
     return (
         <div className='questionBox'>
