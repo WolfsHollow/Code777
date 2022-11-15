@@ -53,8 +53,6 @@ code {
 
 .questionBox {
   grid-area: 1 / 1 / 2 / 3;
-  /* background-color: white; */
-  /* border: 2px solid green; */
   padding-left: 20px;
   padding-right: 10px;
   font-size: 2rem;
@@ -253,15 +251,40 @@ code {
   white-space: 'pre-wrap'
 }
 
-.userNameInput {
+/* .userNameInput {
   width: 50%;
   height: 50px;
   font-size: 3rem;
   align-self: center;
+} */
+
+
+.userNameInput,
+.roomInput {
+  display: block;
+  border: none;
+  width: 50%;
+  font-size: 3rem;
+  align-self: center;
+  border-radius: 20px;
+  padding: 5px 8px;
+  color: #333;
+  box-shadow:
+    inset 0 2px 0 rgba(0, 0, 0, .2),
+    0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.userNameInput:focus,
+.roomInput:focus {
+  outline: none;
+  box-shadow:
+    inset 0 2px 0 rgba(0, 0, 0, .2),
+    0 0 4px rgba(0, 0, 0, 0.1),
+    0 0 5px 1px #51CBEE;
 }
 
 .roomInput {
-  width: 60%;
+  width: 70%;
   height: 50px;
   font-size: 1rem;
   align-self: center;
@@ -504,8 +527,12 @@ code {
   display: grid;
   height: 100%;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  border: 2px solid black;
+  /* border: 2px solid black; */
   box-sizing: border-box;
+}
+
+.userPlayerContainer>.card {
+  align-self: center;
 }
 
 .playerNameContainer {
@@ -527,9 +554,13 @@ code {
   font-size: 2.5rem;
   height: 25%;
   box-sizing: border-box;
-  /* background-color: blue; */
   border: 1px solid white;
+  border-radius: 30px;
   user-select: none;
+  background: linear-gradient(-45deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.33));
+
+  /* text-shadow: 0 0 2px #fff, 0 0 6px #fff, 0 0 10px #fff, 0 0 10px var(--blueColor), 0 0 25px var(--blueColor), 0 0 30px var(--blueColor), 0 0 35px var(--blueColor), 0 0 75px var(--blueColor); */
+
 }
 
 .userPlayerName,
@@ -553,7 +584,6 @@ code {
   z-index: 1;
   width: clamp(80px, 100%, 200px);
   font-size: 6rem;
-  border: 2px solid black;
   justify-content: center;
   align-self: flex-end;
   align-items: center;
@@ -562,7 +592,12 @@ code {
   user-select: none;
   border-radius: 15px;
   justify-self: center;
-
+  box-shadow: 4px 4px 4px rgb(77, 76, 76);
+  background: linear-gradient(-45deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, .99));
+  /* text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.3), 1px 1px 0px rgba(0, 0, 0, 0.8); */
+  text-shadow: 1px 4px 4px #555;
+  text-align: center;
+  border: ridge 5px grey;
 }
 
 .chat {
@@ -581,17 +616,24 @@ table {
   height: 100%;
   border-radius: 10px;
   overflow: scroll;
+  user-select: none;
+
+
 }
 
 th {
   border-bottom: 1px solid white;
   position: sticky;
   top: 0;
-  background: rgb(0, 0, 0, 1)
+  background: rgb(0, 0, 0, 1);
+  user-select: none;
+
 }
 
 td {
   text-align: center;
+  user-select: none;
+
 }
 
 .td-question {
@@ -600,7 +642,6 @@ td {
 
 .numberNoteCardContainer {
   grid-area: 2 / 3 / 5 / 5;
-  border: 2px solid black;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -631,6 +672,8 @@ td {
   border-radius: 10px;
   -webkit-text-stroke-width: .3px;
   user-select: none;
+  text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.3), 1px 1px 0px rgba(0, 0, 0, 0.8);
+  box-shadow: 4px 4px 4px rgb(26, 26, 26);
 }
 
 .numberNoteCard>button {
@@ -648,43 +691,43 @@ td {
 /*#region colors */
 .blk {
   color: var(--black);
-  border: 2px solid var(--black);
+  border: 3px ridge var(--black);
   -webkit-text-stroke-color: var(--black);
 }
 
 .blu {
   color: var(--blue);
-  border: 2px solid var(--blue);
+  border: 3px ridge var(--blue);
   -webkit-text-stroke-color: var(--darkBlue);
 }
 
 .bro {
   color: var(--brown);
-  border: 2px solid var(--brown);
+  border: 3px ridge var(--brown);
   -webkit-text-stroke-color: var(--darkBrown);
 }
 
 .grn {
   color: var(--green);
-  border: 2px solid var(--green);
+  border: 3px ridge var(--green);
   -webkit-text-stroke-color: var(--darkGreen);
 }
 
 .pnk {
   color: var(--pink);
-  border: 2px solid var(--pink);
+  border: 3px ridge var(--pink);
   -webkit-text-stroke-color: var(--darkPink);
 }
 
 .red {
   color: var(--red);
-  border: 2px solid var(--red);
+  border: 3px ridge var(--red);
   -webkit-text-stroke-color: var(--darkRed);
 }
 
 .yel {
   color: var(--yellow);
-  border: 2px solid var(--yellow);
+  border: 3px ridge var(--yellow);
   -webkit-text-stroke-color: var(--darkYellow);
 }
 

@@ -21,7 +21,7 @@ const UserPlayerContainer = () => {
             setColor('red')
         }
         else if (playerTurn !== userPlayerNumber && color === 'red') {
-            setColor('white')
+            setColor('')
         }
     }, [playerTurn])
 
