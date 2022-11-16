@@ -14,7 +14,7 @@ const UserPlayerContainer = () => {
     const questionCards: Array<[string, any]> = [['?', '?'], ['?', '?'], ['?', '?']];
     const [cards, setCards] = useState(questionCards)
 
-    const [color, setColor] = useState('white');
+    const [color, setColor] = useState('');
 
     useEffect(() => {
         if (playerTurn === userPlayerNumber) {
