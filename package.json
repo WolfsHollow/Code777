@@ -1,7 +1,7 @@
 {
   "name": "code777",
   "version": "0.1.0",
-  "hompage": "https://code777.onrender.com/",
+  "homepage": "https://wolfshollow.github.io/code777",
   "private": false,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.6",
