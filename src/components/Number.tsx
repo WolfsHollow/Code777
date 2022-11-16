@@ -9,6 +9,13 @@ type props = {
     reset: boolean,
 }
 
+const CLICK_COLORS = {
+    DEFAULT: 'white',
+    WRONG: 'dimgrey',
+    MAYBE: 'gold',
+    GUESS: 'forestgreen',
+}
+
 const Number = ({ color, value, grid, reset }: props) => {
 
     const [backgroundColor, setBackgroundColor] = useState('white')
@@ -22,38 +29,35 @@ const Number = ({ color, value, grid, reset }: props) => {
     const resetColor = () => {
         dispatch(resetNumberCard())
         greenIndex.current = null;
-        setBackgroundColor('white');
+        setBackgroundColor(CLICK_COLORS.DEFAULT);
     }
 
     const cycleColor = () => {
         let cardColor = backgroundColor;
         switch (cardColor) {
-            case "white":
-                cardColor = 'red';
+            case CLICK_COLORS.DEFAULT:
+                cardColor = CLICK_COLORS.WRONG;
                 break;
-            case "red":
-                cardColor = 'yellow';
+            case CLICK_COLORS.WRONG:
+                cardColor = CLICK_COLORS.MAYBE;
                 break;
-            case "yellow":
+            case CLICK_COLORS.MAYBE:
                 if (guessNumbers.length >= 3) {
-                    cardColor = 'white'
+                    cardColor = CLICK_COLORS.DEFAULT
                     break;
                 }
-                cardColor = 'green';
+                cardColor = CLICK_COLORS.GUESS;
                 let payload: [string, number] = [color, value];
                 greenIndex.current = guessNumbers.length;
                 dispatch(addGuessNumber(payload))
                 break;
-            case "green":
+            case CLICK_COLORS.GUESS:
                 dispatch(removeGuessNumber(greenIndex.current))
                 greenIndex.current = null;
-                cardColor = 'white';
-                break;
-            case "grey":
-                cardColor = 'white';
+                cardColor = CLICK_COLORS.DEFAULT;
                 break;
             default:
-                cardColor = "white"
+                cardColor = CLICK_COLORS.DEFAULT;
                 break;
         }
         return cardColor;

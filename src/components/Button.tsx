@@ -27,7 +27,6 @@ const Button = ({ text, routesTo, onClick, routeAndClick, className, buttonStyle
                 navigate(`/${routesTo}`);
             }
             else {
-                console.log(routesTo)
                 onClick()
             }
         }

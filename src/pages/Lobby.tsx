@@ -17,7 +17,6 @@ const Lobby = () => {
     const username = useAppSelector(selectUsername);
     const players = useAppSelector(selectPlayers);
 
-    // console.log('lobby - players in room ', ws.playersInRoom)
     let playerList = Object.keys(ws.playersInRoom);
 
     let playerDivs: Array<React.ReactNode> = useMemo(() => {

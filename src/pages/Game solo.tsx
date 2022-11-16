@@ -79,7 +79,6 @@ const Game = () => {
             let userHand = playerHands[userPlayerNumber];
             let handNumbers = userHand.map(card => card[1]);
             let guessNumbersOnly = guessNumbers.map(card => card[1]);
-            console.log(guessNumbersOnly, handNumbers);
 
             let unionArray = handNumbers.map(number => {
                 let index = guessNumbersOnly.indexOf(number)

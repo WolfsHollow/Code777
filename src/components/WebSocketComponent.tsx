@@ -31,7 +31,8 @@ const WebSocketComponent = ({ children }) => {
     const connect = (roomID: string) => {
         try {
             userID.current = uuidv4().toUpperCase(); // create here a uuid for this connection
-            socket = new WebSocket('ws://localhost:8082');
+            // socket = new WebSocket('wss://code777server.onrender.com/');
+            socket = new WebSocket('ws:localhost:8080');
             if (!roomID) roomID = userID.current;
             setRoomJoined(roomID);
             addListeners(roomID);
@@ -112,7 +113,6 @@ const WebSocketComponent = ({ children }) => {
         });
 
         socket.addEventListener('open', () => {
-            console.log('we connected yo');
             sendMessage(userID.current, TYPE.JOIN, [roomID])
             onConnected(roomID);
         });
@@ -124,7 +124,6 @@ const WebSocketComponent = ({ children }) => {
                 payload: userID.current,
             }
             socket.send(JSON.stringify(message));
-            console.log('we not connected yo');
         });
     }
 

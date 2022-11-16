@@ -35,7 +35,6 @@ const Question = ({ question }: props) => {
     //for server play
     const handleNewQuestion = () => {
         let nextPlayer = playerTurn + 1 > numPlayers - 1 ? 0 : playerTurn + 1;
-        console.log('question - the next player is ', nextPlayer, 'current ', playerTurn)
         if (nextPlayer === userPlayerNumber) {
             // dispatch(updateQuestionHistory([`Q${question}`, answer, players[playerTurn]]))
             ws.sendMessage(username, TYPE.NEXT_QUESTION, 'NEXT QUESTION')
@@ -47,9 +46,9 @@ const Question = ({ question }: props) => {
 
     return (
         <div className='questionBox'>
-            <p>{questionList[question]}</p>
-            <p>{answer}</p>
-            <Button text='Next Question' onClick={handleNewQuestion} />
+            <div className='startInstructions questionText'>{questionList[question]}</div>
+            <div className='startInstructions answerText'>{answer}
+                <Button text='Next Question' className='button button-glow questionButton' onClick={handleNewQuestion} /></div>
         </div>
     )
 }

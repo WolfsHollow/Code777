@@ -55,7 +55,6 @@ export const gameStateSlice = createSlice({
                 playerIndex = 0;
             }
             state.playerTurn = playerIndex;
-            console.log(`Next player's turn`)
         },
         dealCards: (state, action: PayloadAction<number>) => {
             let newDeck = shuffle(DECK)
@@ -68,7 +67,6 @@ export const gameStateSlice = createSlice({
         },
         updateDeck: (state, { payload }: PayloadAction<Array<[string, number]>>) => {
             state.deck = payload;
-            console.log('deck updated');
         },
         gameOver: (state, { payload }: PayloadAction<string>) => {
             console.log(`${payload} wins!`)
@@ -82,7 +80,6 @@ export const gameStateSlice = createSlice({
 
             state.currentQuestion = nextQuestion;
             state.questionBank = newQuestionList;
-            console.log(`current question is Q${state.currentQuestion}`)
         },
         startGame: (state, { payload }: PayloadAction<Object>) => {
             // payload:  deck, questionlist, hands, players
@@ -117,7 +114,6 @@ export const gameStateSlice = createSlice({
 
             state.currentQuestion = payload;
 
-            console.log(`current question is Q${state.currentQuestion}, answer is ${state.questionAnswer}`)
 
             // change player
             let playerIndex = state.playerTurn;
@@ -128,7 +124,6 @@ export const gameStateSlice = createSlice({
             state.playerTurn = playerIndex;
             let newAnswer = getQuestionAnswer(payload, state.numPlayers, state.playerHands, state.playerTurn);
             state.questionAnswer = newAnswer;
-            console.log(`current player: ${state.playerTurn}`)
         },
         madeGuess: (state, { payload }: PayloadAction<boolean>) => { //solo
 
@@ -158,7 +153,6 @@ export const gameStateSlice = createSlice({
         },
         makeQuestionBankList: (state, { payload }: PayloadAction<Array<number>>) => {
             state.questionBank = shuffle(QUESTION_BANK);
-            console.log('question bank updated');
         },
         addGuessNumber: (state, { payload }: PayloadAction<[string, number]>) => {
             console.log('payload', payload)
@@ -167,7 +161,6 @@ export const gameStateSlice = createSlice({
         removeGuessNumber: (state, { payload }: PayloadAction<number>) => {
             console.log(payload);
             state.guessNumbers.splice(payload, 1);
-            console.log('removed number from guessNumber')
         },
         resetNumberCard: (state, { payload }: PayloadAction<number>) => {
             state.guessNumbers = [];
@@ -191,13 +184,11 @@ export const gameStateSlice = createSlice({
             state.questionHistory.push(payload);
         },
         updatePlayers: (state, { payload }: PayloadAction<Array<string>>) => {
-            console.log(`updating players to ${payload}`)
             state.players = payload;
         },
         updateUsername: (state, { payload }: PayloadAction<string>) => {
             // state.username = payload;
             state.username = payload;
-            console.log('Username changed to ', payload);
         },
         resetState: (state, action) => {
             return {// reset everything other than login info

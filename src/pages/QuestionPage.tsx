@@ -17,12 +17,10 @@ const QuestionPage = () => {
 
     const newQuestion = () => {
         setQuestionNumber(questions.current.questionBank.shift());
-        console.log(questions.current.questionBank.length)
         if (questions.current.questionBank.length === 0) {
             questions.current.questionBank = shuffle(QUESTION_BANK);
             console.log('shuffled!');
         }
-        console.log(questions.current.questionBank);
     }
 
     useEffect(() => {
