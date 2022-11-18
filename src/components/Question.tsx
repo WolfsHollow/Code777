@@ -24,6 +24,7 @@ const Question = ({ question }: props) => {
     const username = useAppSelector(selectUsername);
     const players = useAppSelector(selectPlayers);
     const answer = useAppSelector(selectQuestionAnswer)
+    let nextPlayer = playerTurn + 1 > numPlayers - 1 ? 0 : playerTurn + 1;
 
     // let answer = getQuestionAnswer(question, numPlayers, playerHands, playerTurn);
 
@@ -34,7 +35,6 @@ const Question = ({ question }: props) => {
 
     //for server play
     const handleNewQuestion = () => {
-        let nextPlayer = playerTurn + 1 > numPlayers - 1 ? 0 : playerTurn + 1;
         if (nextPlayer === userPlayerNumber) {
             // dispatch(updateQuestionHistory([`Q${question}`, answer, players[playerTurn]]))
             ws.sendMessage(username, TYPE.NEXT_QUESTION, 'NEXT QUESTION')
@@ -48,7 +48,8 @@ const Question = ({ question }: props) => {
         <div className='questionBox'>
             <div className='startInstructions questionText'>{questionList[question]}</div>
             <div className='startInstructions answerText'>{answer}
-                <Button text='Next Question' className='button button-glow questionButton' onClick={handleNewQuestion} /></div>
+                {nextPlayer === userPlayerNumber ? <Button text='Next Question' className='button button-glow questionButton' onClick={handleNewQuestion} /> : null}
+            </div>
         </div>
     )
 }

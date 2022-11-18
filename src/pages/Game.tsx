@@ -75,16 +75,16 @@ const Game = () => {
             let handNumbers = userHand.map(card => card[1]);
             let guessNumbersOnly = guessNumbers.map(card => card[1]);
 
-            let unionArray = handNumbers.map(number => {
+
+            handNumbers.forEach(number => {
                 let index = guessNumbersOnly.indexOf(number)
-                if (index === -1) {
+                if (index !== -1) {
                     guessNumbersOnly.splice(index, 1)
                 }
-                return index
             })
             let isCorrect = false;
 
-            if (guessNumbersOnly.length === 3) {
+            if (guessNumbersOnly.length === 0) {
                 isCorrect = true;
             }
             //solo

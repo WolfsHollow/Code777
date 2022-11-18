@@ -87,7 +87,7 @@ const WebSocketComponent = ({ children }) => {
 
             let { sender, userID, type, payload } = JSON.parse(data.data);
 
-            console.warn({ sender, userID, type, payload });
+            // console.warn({ sender, userID, type, payload });
             switch (type) {
                 case TYPE.INITIALIZE_GAME: // payload:  deck, questionlist, hands, players
                     dispatch(startGame(payload));
