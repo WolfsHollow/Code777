@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/code777/static/css/main.69fc522f.css",
+    "main.js": "/code777/static/js/main.78d931db.js",
+    "static/media/GameBackground.png": "/code777/static/media/GameBackground.169e8fa5431bcbf32aa6.png",
+    "static/media/Sonar_Background2.png": "/code777/static/media/Sonar_Background2.260897259b37c4bf17ee.png",
+    "static/media/Sonar_Background.png": "/code777/static/media/Sonar_Background.50cc26b69ac329b5d80a.png",
+    "static/media/Lock-Background.png": "/code777/static/media/Lock-Background.3fa73128fbd44a4e958b.png",
+    "static/media/greenLockIconUnlock.png": "/code777/static/media/greenLockIconUnlock.29cc8096dbcd40c198e0.png",
+    "static/media/redLockIcon.png": "/code777/static/media/redLockIcon.8dcc3542dfcdca607ab9.png",
+    "index.html": "/code777/index.html",
+    "main.69fc522f.css.map": "/code777/static/css/main.69fc522f.css.map",
+    "main.78d931db.js.map": "/code777/static/js/main.78d931db.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.69fc522f.css",
+    "static/js/main.78d931db.js"
+  ]
+}
